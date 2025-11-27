@@ -1,53 +1,113 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import axios from 'axios';
+import '@/App.css';
+import LoginPage from '@/pages/LoginPage';
+import RegisterPage from '@/pages/RegisterPage';
+import DashboardPage from '@/pages/DashboardPage';
+import LotriPage from '@/pages/LotriPage';
+import ParyajPage from '@/pages/ParyajPage';
+import CasinoPage from '@/pages/CasinoPage';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// Context for auth
+export const AuthContext = React.createContext();
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
+// Protected Route component
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
 };
 
 function App() {
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get(`${API}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setAdmin(response.data);
+        } catch (error) {
+          localStorage.removeItem('token');
+        }
+      }
+      setLoading(false);
+    };
+    checkAuth();
+  }, []);
+
+  const login = (token, adminData) => {
+    localStorage.setItem('token', token);
+    setAdmin(adminData);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setAdmin(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0a1628]">
+        <div className="text-white text-xl">Chajman...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <AuthContext.Provider value={{ admin, login, logout, API }}>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={admin ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+            <Route path="/register" element={admin ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/lotri"
+              element={
+                <ProtectedRoute>
+                  <LotriPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/paryaj"
+              element={
+                <ProtectedRoute>
+                  <ParyajPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/casino"
+              element={
+                <ProtectedRoute>
+                  <CasinoPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </AuthContext.Provider>
   );
 }
 
