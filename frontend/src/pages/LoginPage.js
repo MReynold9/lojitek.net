@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '@/App';
+import { ArrowLeft } from 'lucide-react';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -30,80 +31,89 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen circuit-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-md animate-fadeIn">
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="lojitek-logo mx-auto" data-testid="logo-container">
-            <svg width="50" height="50" viewBox="0 0 100 100" fill="none">
-              <path d="M20 50 L35 35 L50 50 L65 35 L80 50" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="35" cy="35" r="4" fill="white"/>
-              <circle cx="50" cy="50" r="4" fill="white"/>
-              <circle cx="65" cy="35" r="4" fill="white"/>
-              <rect x="20" y="60" width="60" height="20" rx="4" fill="white" fillOpacity="0.3"/>
-            </svg>
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1628] to-[#1a2f4a] relative overflow-hidden">
+      {/* Decorative circuit patterns */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 right-0 w-96 h-96 border-2 border-cyan-400 rounded-full" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 border-2 border-orange-400" style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 75%, 75% 100%, 0% 100%)' }}></div>
+      </div>
+      
+      {/* Orange top bar */}
+      <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          {/* Header */}
+          <div className="flex items-center justify-center mb-8 relative">
+            <button
+              onClick={() => navigate('/')}
+              className="absolute left-0 text-white hover:text-gray-300 transition-colors p-3 hover:bg-white/10 rounded-full"
+              data-testid="back-button"
+            >
+              <ArrowLeft size={28} />
+            </button>
+            <h1 className="text-4xl font-bold text-white text-center" data-testid="page-title">
+              Paj Koneksyon
+            </h1>
           </div>
-          <h1 className="text-4xl font-bold mt-4 mb-2" style={{ fontFamily: 'Exo 2, sans-serif' }} data-testid="main-title">
-            LOJITEK
-          </h1>
-          <p className="text-lg text-gray-300" data-testid="subtitle">SOLISYON ENTÈLIJAN POU BIZNIS OU</p>
-        </div>
 
-        {/* Login Form */}
-        <div className="glass-card">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-2xl" data-testid="error-message">
-                {error}
+          {/* Login Form Card */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 animate-fadeIn">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-50 border-2 border-red-300 text-red-700 px-4 py-3 rounded-2xl text-center font-medium" data-testid="error-message">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-gray-800 font-semibold mb-3 text-lg" htmlFor="email">
+                  Imèl
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  className="w-full px-6 py-4 bg-white border-3 border-blue-600 rounded-full text-gray-800 text-lg focus:outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-200 transition-all"
+                  placeholder="Enter imèl..."
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                  data-testid="email-input"
+                />
               </div>
-            )}
 
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="email">Imèl</label>
-              <input
-                id="email"
-                type="email"
-                className="input-field"
-                placeholder="Enter imèl..."
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                data-testid="email-input"
-              />
-            </div>
+              <div>
+                <label className="block text-gray-800 font-semibold mb-3 text-lg" htmlFor="password">
+                  Modpas
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  className="w-full px-6 py-4 bg-white border-3 border-blue-600 rounded-full text-gray-800 text-lg focus:outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-200 transition-all"
+                  placeholder="Enter modpas..."
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                  data-testid="password-input"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="password">Modpas</label>
-              <input
-                id="password"
-                type="password"
-                className="input-field"
-                placeholder="Enter modpas..."
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-                data-testid="password-input"
-              />
-            </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-full text-xl transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading}
+                data-testid="login-button"
+              >
+                {loading ? 'Chajman...' : 'Konekte 🏠'}
+              </button>
 
-            <button
-              type="submit"
-              className="btn-primary w-full"
-              disabled={loading}
-              data-testid="login-button"
-            >
-              {loading ? 'Chajman...' : 'KONEKTE'}
-            </button>
-
-            <button
-              type="button"
-              className="btn-secondary w-full"
-              onClick={() => navigate('/register')}
-              data-testid="register-navigate-button"
-            >
-              KREYE YON NOUVO KONT
-            </button>
-          </form>
+              <div className="text-center mt-6">
+                <p className="text-red-600 font-medium text-lg">
+                  Ou bliye modpas ou.
+                </p>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

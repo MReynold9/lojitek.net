@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import '@/App.css';
+import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
@@ -70,7 +71,8 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={admin ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+            <Route path="/" element={admin ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+            <Route path="/login" element={admin ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
             <Route path="/register" element={admin ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
             <Route
               path="/dashboard"
