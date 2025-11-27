@@ -89,6 +89,9 @@ def create_token(admin_id: str) -> str:
     return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
 
 async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if credentials is None:
+        raise HTTPException(status_code=401, detail="Authorization header required")
+    
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
