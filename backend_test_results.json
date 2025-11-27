@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-11-27T16:28:55.295342",
+  "total_tests": 9,
+  "passed_tests": 8,
+  "success_rate": 88.88888888888889,
+  "results": [
+    {
+      "test": "API Root",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Admin Registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Duplicate Email Registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Duplicate ID Registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Invalid Login",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Current Admin",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Admin Stats",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Unauthorized Access",
+      "success": false,
+      "details": "Expected 401, got 403 - {'detail': 'Not authenticated'}"
+    }
+  ]
+}
