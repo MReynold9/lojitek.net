@@ -164,6 +164,14 @@ function App() {
               }
             />
             <Route
+              path="/lotri/bolet"
+              element={
+                <ProtectedRoute>
+                  {admin?.has_company ? <BoletPage /> : <Navigate to="/company-setup" replace />}
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/paryaj"
               element={
                 <ProtectedRoute>
