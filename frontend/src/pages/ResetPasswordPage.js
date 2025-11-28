@@ -4,27 +4,32 @@ import axios from 'axios';
 import { AuthContext } from '@/App';
 import { ArrowLeft } from 'lucide-react';
 
-const LoginPage = () => {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
-  const { login, API } = useContext(AuthContext);
+  const { API } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    id_number: '',
+    new_password: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess(false);
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API}/auth/login`, formData);
-      login(response.data.token, response.data.admin);
-      navigate('/dashboard');
+      await axios.post(`${API}/auth/reset-password`, formData);
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Erè nan koneksyon');
+      setError(err.response?.data?.detail || 'Erè nan chanjman modpas');
     } finally {
       setLoading(false);
     }
@@ -46,23 +51,29 @@ const LoginPage = () => {
           {/* Header */}
           <div className="flex items-center justify-center mb-8 relative">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/login')}
               className="absolute left-0 text-white hover:text-gray-300 transition-colors p-3 hover:bg-white/10 rounded-full"
               data-testid="back-button"
             >
               <ArrowLeft size={28} />
             </button>
             <h1 className="text-4xl font-bold text-white text-center" data-testid="page-title">
-              Paj Koneksyon
+              Chanje Modpas
             </h1>
           </div>
 
-          {/* Login Form Card */}
+          {/* Reset Password Form Card */}
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 animate-fadeIn">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
                 <div className="bg-red-50 border-2 border-red-300 text-red-700 px-4 py-3 rounded-2xl text-center font-medium" data-testid="error-message">
                   {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="bg-green-50 border-2 border-green-300 text-green-700 px-4 py-3 rounded-2xl text-center font-medium" data-testid="success-message">
+                  Modpas chanje ak siksè! W ap redirije...
                 </div>
               )}
 
@@ -83,40 +94,46 @@ const LoginPage = () => {
               </div>
 
               <div>
-                <label className="block text-gray-800 font-semibold mb-3 text-lg" htmlFor="password">
-                  Modpas
+                <label className="block text-gray-800 font-semibold mb-3 text-lg" htmlFor="id_number">
+                  Nimewo Idantite
                 </label>
                 <input
-                  id="password"
+                  id="id_number"
+                  type="text"
+                  className="w-full px-6 py-4 bg-white border-3 border-blue-600 rounded-full text-gray-800 text-lg focus:outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-200 transition-all"
+                  placeholder="Enter nimewo idantite..."
+                  value={formData.id_number}
+                  onChange={(e) => setFormData({ ...formData, id_number: e.target.value })}
+                  required
+                  data-testid="id-number-input"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-800 font-semibold mb-3 text-lg" htmlFor="new_password">
+                  Nouvo Modpas
+                </label>
+                <input
+                  id="new_password"
                   type="password"
                   className="w-full px-6 py-4 bg-white border-3 border-blue-600 rounded-full text-gray-800 text-lg focus:outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-200 transition-all"
-                  placeholder="Enter modpas..."
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Enter nouvo modpas..."
+                  value={formData.new_password}
+                  onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
                   required
-                  data-testid="password-input"
+                  minLength={6}
+                  data-testid="new-password-input"
                 />
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-full text-xl transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
-                data-testid="login-button"
+                disabled={loading || success}
+                data-testid="reset-button"
               >
-                {loading ? 'Chajman...' : 'Konekte 🏠'}
+                {loading ? 'Chajman...' : 'Chanje Modpas'}
               </button>
-
-              <div className="text-center mt-6">
-                <button
-                  type="button"
-                  onClick={() => navigate('/reset-password')}
-                  className="text-red-600 hover:text-red-700 font-medium text-lg underline transition-colors"
-                  data-testid="forgot-password-link"
-                >
-                  Ou bliye modpas ou.
-                </button>
-              </div>
             </form>
           </div>
         </div>
@@ -125,4 +142,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ResetPasswordPage;

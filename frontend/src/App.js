@@ -5,6 +5,7 @@ import '@/App.css';
 import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
+import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LotriPage from '@/pages/LotriPage';
 import ParyajPage from '@/pages/ParyajPage';
@@ -74,6 +75,7 @@ function App() {
             <Route path="/" element={admin ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
             <Route path="/login" element={admin ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
             <Route path="/register" element={admin ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+            <Route path="/reset-password" element={admin ? <Navigate to="/dashboard" replace /> : <ResetPasswordPage />} />
             <Route
               path="/dashboard"
               element={
