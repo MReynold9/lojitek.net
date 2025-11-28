@@ -113,9 +113,6 @@ const BoletPage = () => {
           <button className="p-2">
             <Bell size={24} />
           </button>
-          <button className="p-2">
-            <ArrowRight size={24} />
-          </button>
         </div>
       </header>
 
