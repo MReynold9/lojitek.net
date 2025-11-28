@@ -46,14 +46,9 @@ const CompanySetupPage = () => {
       await axios.post(`${API}/company/create`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Store a flag to prevent auto-redirect to company setup
-      sessionStorage.setItem('company_created', 'true');
-      // Clear token and redirect to login
-      localStorage.removeItem('token');
-      // Redirect to login after a short delay
-      setTimeout(() => {
-        navigate('/login', { replace: true });
-      }, 100);
+      // Logout and redirect to login
+      logout();
+      window.location.href = '/login';
     } catch (err) {
       setError(err.response?.data?.detail || 'Erè nan kreyasyon antrepriz');
     } finally {
