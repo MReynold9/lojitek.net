@@ -85,6 +85,7 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('company_created');
     setAdmin(null);
   };
 
