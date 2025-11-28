@@ -6,7 +6,7 @@ import { ArrowLeft, Upload, Building2 } from 'lucide-react';
 
 const CompanySetupPage = () => {
   const navigate = useNavigate();
-  const { API } = useContext(AuthContext);
+  const { API, logout } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     logo_base64: '',
     company_name: '',
