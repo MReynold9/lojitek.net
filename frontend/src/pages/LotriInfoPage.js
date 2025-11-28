@@ -29,73 +29,38 @@ const LotriInfoPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Logo and Device Section */}
-        <div className="relative mb-8 flex justify-center items-center">
-          {/* Circuit pattern background */}
-          <div className="absolute inset-0 opacity-20">
-            <svg width="100%" height="300" xmlns="http://www.w3.org/2000/svg">
-              <path d="M 50 150 L 200 150 L 200 50" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-              <path d="M 600 150 L 450 150 L 450 250" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-              <circle cx="200" cy="150" r="4" fill="#00d4ff"/>
-              <circle cx="450" cy="150" r="4" fill="#00d4ff"/>
-            </svg>
+      <main className="max-w-7xl mx-auto px-4 py-6 relative">
+        {/* Circuit pattern background - FULL PAGE */}
+        <svg className="absolute inset-0 w-full h-full opacity-30 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+          {/* Top circuit lines */}
+          <path d="M 200 50 L 400 50 L 400 150" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <path d="M 800 80 L 1000 80 L 1000 200 L 1100 200" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <circle cx="400" cy="50" r="5" fill="#00d4ff"/>
+          <circle cx="1000" cy="80" r="5" fill="#00d4ff"/>
+          
+          {/* Middle circuit lines */}
+          <path d="M 100 400 L 300 400" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <path d="M 900 500 L 1100 500 L 1100 650" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <circle cx="300" cy="400" r="5" fill="#00d4ff"/>
+          <circle cx="1100" cy="500" r="5" fill="#cyan"/>
+          
+          {/* Bottom circuit lines */}
+          <path d="M 200 800 L 400 800 L 400 900" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <path d="M 900 850 L 1100 850" stroke="#00d4ff" strokeWidth="2" fill="none"/>
+          <circle cx="400" cy="800" r="5" fill="#00d4ff"/>
+          <circle cx="1100" cy="850" r="5" fill="#cyan"/>
+        </svg>
+
+        {/* Large Logo at top */}
+        <div className="relative z-10 mb-8">
+          <div className="text-[#00d4ff] text-6xl font-bold mb-2" style={{fontFamily: 'Arial, sans-serif', letterSpacing: '2px'}}>
+            loq Lojitek
           </div>
-
-          {/* Logo Text */}
-          <div className="absolute left-8 top-8 z-10">
-            <div className="text-[#00d4ff] text-5xl font-bold mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
-              loj Lojitek
-            </div>
-            <p className="text-gray-400 text-sm">Solisyon entèlijan pou biznis ou</p>
-          </div>
-
-          {/* Device/Card Image */}
-          <div className="relative z-10 mt-24">
-            {/* Red card reader */}
-            <div className="w-80 h-48 bg-gradient-to-br from-orange-600 to-red-700 rounded-3xl shadow-2xl border-4 border-black relative overflow-hidden">
-              {/* Top stripe */}
-              <div className="absolute top-8 left-0 right-0 h-12 bg-black"></div>
-              
-              {/* Contactless payment icon */}
-              <div className="absolute top-12 right-8">
-                <svg width="50" height="40" viewBox="0 0 50 40" fill="none">
-                  <path d="M 10 20 Q 20 10 30 20" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none"/>
-                  <path d="M 5 25 Q 20 5 35 25" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none"/>
-                  <path d="M 0 30 Q 20 0 40 30" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none"/>
-                </svg>
-              </div>
-
-              {/* Sunm label */}
-              <div className="absolute bottom-8 left-8 text-white text-xl font-semibold">
-                sunm
-              </div>
-
-              {/* Phone inside card */}
-              <div className="absolute bottom-4 right-4 w-44 h-64 bg-gradient-to-b from-blue-900 to-blue-950 rounded-2xl border-4 border-gray-300 shadow-xl">
-                {/* Phone screen */}
-                <div className="absolute inset-2 bg-[#1a4a7a] rounded-xl flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-[#00d4ff] text-3xl font-bold mb-2">loj</div>
-                    <div className="text-white text-2xl font-bold">Lojitek</div>
-                    <p className="text-gray-300 text-xs mt-1">Solisyon entèlijan pou biznis ou</p>
-                  </div>
-                </div>
-                {/* Home button */}
-                <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-12 h-3 bg-gray-400 rounded-full"></div>
-              </div>
-            </div>
-
-            {/* Circuit line extending to content */}
-            <svg className="absolute -bottom-20 left-1/2 transform -translate-x-1/2" width="2" height="80" xmlns="http://www.w3.org/2000/svg">
-              <line x1="1" y1="0" x2="1" y2="80" stroke="#00d4ff" strokeWidth="2"/>
-              <circle cx="1" cy="80" r="4" fill="#00d4ff"/>
-            </svg>
-          </div>
+          <p className="text-gray-400 text-lg">Solisyon entèlijan pou biznis ou</p>
         </div>
 
-        {/* Info Content */}
-        <div className="bg-[#0a2447] rounded-3xl p-6 mt-24 border border-cyan-500/30">
+        {/* Main Layout: Text LEFT, Image RIGHT */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="space-y-4 text-white">
             {/* Title */}
             <div className="mb-6">
