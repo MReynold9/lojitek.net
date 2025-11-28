@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/RegisterPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import CompanySetupPage from '@/pages/CompanySetupPage';
 import HomePage from '@/pages/HomePage';
+import ConditionsPage from '@/pages/ConditionsPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LotriPage from '@/pages/LotriPage';
 import ParyajPage from '@/pages/ParyajPage';
