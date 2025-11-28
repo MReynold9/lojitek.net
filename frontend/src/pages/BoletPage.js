@@ -186,11 +186,11 @@ const BoletPage = () => {
 
         {activeTab === 'maryaj' && (
           <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="flex items-center gap-3">
               <input
                 type="text"
                 placeholder="00"
-                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num1-input"
                 maxLength={2}
               />
@@ -200,26 +200,18 @@ const BoletPage = () => {
               <input
                 type="text"
                 placeholder="00"
-                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num2-input"
                 maxLength={2}
               />
               <input
                 type="text"
-                placeholder="0000-9999"
-                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-lg focus:outline-none focus:border-red-700"
-                data-testid="maryaj-range-input"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3 mt-3">
-              <input
-                type="text"
                 placeholder="Montan"
-                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl focus:outline-none focus:border-red-700"
+                className="flex-1 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl focus:outline-none focus:border-red-700"
                 data-testid="maryaj-montan-input"
               />
               <button
-                className="bg-red-600 text-white rounded-full flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors"
+                className="bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors flex-shrink-0"
                 data-testid="maryaj-add-button"
               >
                 <Plus size={32} />
