@@ -60,11 +60,11 @@ const BoletPage = () => {
       {/* Orange divider */}
       <div className="h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
 
-      {/* Tabs */}
-      <div className="bg-white px-2 py-3 flex gap-2 overflow-x-auto">
+      {/* Tabs - Scrollable */}
+      <div className="bg-white px-2 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setActiveTab('bolet')}
-          className={`px-8 py-3 rounded-full font-bold text-lg ${
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
             activeTab === 'bolet' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
           }`}
           data-testid="tab-bolet"
@@ -73,7 +73,7 @@ const BoletPage = () => {
         </button>
         <button
           onClick={() => setActiveTab('maryaj')}
-          className={`px-8 py-3 rounded-full font-bold text-lg ${
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
             activeTab === 'maryaj' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
           }`}
           data-testid="tab-maryaj"
@@ -82,7 +82,7 @@ const BoletPage = () => {
         </button>
         <button
           onClick={() => setActiveTab('loto1')}
-          className={`px-8 py-3 rounded-full font-bold text-lg ${
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
             activeTab === 'loto1' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
           }`}
           data-testid="tab-loto1"
@@ -91,12 +91,48 @@ const BoletPage = () => {
         </button>
         <button
           onClick={() => setActiveTab('loto3')}
-          className={`px-8 py-3 rounded-full font-bold text-lg ${
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
             activeTab === 'loto3' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
           }`}
           data-testid="tab-loto3"
         >
           Loto3
+        </button>
+        <button
+          onClick={() => setActiveTab('loto4')}
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
+            activeTab === 'loto4' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
+          }`}
+          data-testid="tab-loto4"
+        >
+          Loto4
+        </button>
+        <button
+          onClick={() => setActiveTab('loto5')}
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
+            activeTab === 'loto5' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
+          }`}
+          data-testid="tab-loto5"
+        >
+          Loto5
+        </button>
+        <button
+          onClick={() => setActiveTab('loto6')}
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
+            activeTab === 'loto6' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
+          }`}
+          data-testid="tab-loto6"
+        >
+          Loto6
+        </button>
+        <button
+          onClick={() => setActiveTab('loto7')}
+          className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
+            activeTab === 'loto7' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
+          }`}
+          data-testid="tab-loto7"
+        >
+          Loto7
         </button>
       </div>
 
