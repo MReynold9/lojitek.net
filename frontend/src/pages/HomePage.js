@@ -143,21 +143,23 @@ const HomePage = () => {
         </div>
 
         {/* Services Section */}
-        <div className="mb-8">
+        <div className="mb-20">
           <h2 className="text-white text-2xl font-bold mb-6 text-center">Dekouvri sèvis nou yo</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             {services.map((service) => (
               <button
                 key={service.id}
                 onClick={() => navigate(service.path)}
-                className="bg-white rounded-2xl p-6 flex items-center justify-between hover:shadow-xl transition-all transform hover:scale-[1.02] group"
+                className="bg-white rounded-2xl p-5 flex items-center justify-between hover:shadow-xl transition-all transform hover:scale-[1.01] group w-full"
                 data-testid={`service-${service.id}`}
               >
-                <div className="flex items-center gap-4">
-                  <div className="text-5xl">{service.icon}</div>
-                  <span className="text-gray-800 font-semibold text-lg">{service.title}</span>
+                <div className="flex items-center gap-5">
+                  <ServiceIcon type={service.iconType} />
+                  <span className="text-gray-800 font-semibold text-lg text-left">{service.title}</span>
                 </div>
-                <span className="text-orange-500 text-3xl group-hover:translate-x-1 transition-transform">›</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-orange-500 group-hover:translate-x-1 transition-transform">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </button>
             ))}
           </div>
