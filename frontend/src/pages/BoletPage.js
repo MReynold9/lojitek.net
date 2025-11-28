@@ -118,12 +118,12 @@ const BoletPage = () => {
       <div className="h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
 
       {/* Tabs */}
-      <div className="bg-white px-2 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
+      <div className="bg-white px-1 py-2 flex gap-1 overflow-x-auto scrollbar-hide">
         {['bolet', 'maryaj', 'loto1', 'loto3', 'loto4', 'loto5', 'loto6', 'loto7'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-8 py-3 rounded-full font-bold text-lg flex-shrink-0 ${
+            className={`px-4 py-2 rounded-full font-semibold text-sm flex-shrink-0 ${
               activeTab === tab ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'
             }`}
             data-testid={`tab-${tab}`}
