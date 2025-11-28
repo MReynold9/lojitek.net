@@ -260,6 +260,8 @@ const BoletPage = () => {
               <input
                 type="text"
                 placeholder="00"
+                value={maryajNum1}
+                onChange={(e) => setMaryajNum1(e.target.value)}
                 className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num1-input"
                 maxLength={2}
@@ -270,6 +272,8 @@ const BoletPage = () => {
               <input
                 type="text"
                 placeholder="00"
+                value={maryajNum2}
+                onChange={(e) => setMaryajNum2(e.target.value)}
                 className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num2-input"
                 maxLength={2}
@@ -277,11 +281,15 @@ const BoletPage = () => {
               <input
                 type="text"
                 placeholder="Montan"
+                value={maryajMontan}
+                onChange={(e) => setMaryajMontan(e.target.value)}
                 className="flex-1 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl focus:outline-none focus:border-red-700"
                 data-testid="maryaj-montan-input"
               />
               <button
-                className="bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors flex-shrink-0"
+                onClick={handleAddTicket}
+                disabled={loading}
+                className="bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors flex-shrink-0 disabled:opacity-50"
                 data-testid="maryaj-add-button"
               >
                 <Plus size={32} />
