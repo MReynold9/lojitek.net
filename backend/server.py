@@ -192,6 +192,10 @@ async def login(credentials: AdminLogin):
     if isinstance(admin['created_at'], str):
         admin['created_at'] = datetime.fromisoformat(admin['created_at'])
     
+    # Check if admin has a company
+    company = await db.companies.find_one({"admin_id": admin['id']})
+    has_company = company is not None
+    
     # Create token
     token = create_token(admin['id'])
     
@@ -199,8 +203,8 @@ async def login(credentials: AdminLogin):
     admin.pop('password')
     admin.pop('_id', None)
     
-    admin_response = AdminResponse(**admin)
-    return LoginResponse(token=token, admin=admin_response)
+    admin_response = AdminResponse(**admin, has_company=has_company)
+    return LoginResponse(token=token, admin=admin_response, has_company=has_company)
 
 @api_router.get("/auth/me", response_model=AdminResponse)
 async def get_me(current_admin: AdminResponse = Depends(get_current_admin)):
