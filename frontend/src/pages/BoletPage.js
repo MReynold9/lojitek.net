@@ -152,34 +152,90 @@ const BoletPage = () => {
         {/* Purple divider */}
         <div className="h-1 bg-gradient-to-r from-blue-800 to-purple-800 mb-4"></div>
 
-        {/* Input Section */}
-        <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-          <div className="grid grid-cols-3 gap-3">
-            <input
-              type="text"
-              placeholder="00"
-              value={numeroInput}
-              onChange={(e) => setNumeroInput(e.target.value)}
-              className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl font-semibold focus:outline-none focus:border-blue-600"
-              data-testid="numero-input"
-            />
-            <input
-              type="text"
-              placeholder="Montan"
-              value={montanInput}
-              onChange={(e) => setMontanInput(e.target.value)}
-              className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl focus:outline-none focus:border-blue-600"
-              data-testid="montan-input"
-            />
-            <button
-              onClick={handleAddTicket}
-              className="bg-[#0a2447] text-white rounded-full flex items-center justify-center text-3xl font-bold hover:bg-[#0c3058] transition-colors"
-              data-testid="add-button"
-            >
-              <Plus size={32} />
-            </button>
+        {/* Input Section - Changes based on active tab */}
+        {activeTab === 'bolet' && (
+          <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
+            <div className="grid grid-cols-3 gap-3">
+              <input
+                type="text"
+                placeholder="00"
+                value={numeroInput}
+                onChange={(e) => setNumeroInput(e.target.value)}
+                className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl font-semibold focus:outline-none focus:border-blue-600"
+                data-testid="numero-input"
+                maxLength={2}
+              />
+              <input
+                type="text"
+                placeholder="Montan"
+                value={montanInput}
+                onChange={(e) => setMontanInput(e.target.value)}
+                className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl focus:outline-none focus:border-blue-600"
+                data-testid="montan-input"
+              />
+              <button
+                onClick={handleAddTicket}
+                className="bg-[#0a2447] text-white rounded-full flex items-center justify-center text-3xl font-bold hover:bg-[#0c3058] transition-colors"
+                data-testid="add-button"
+              >
+                <Plus size={32} />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
+
+        {activeTab === 'maryaj' && (
+          <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
+            <div className="grid grid-cols-4 gap-3">
+              <input
+                type="text"
+                placeholder="00"
+                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                data-testid="maryaj-num1-input"
+                maxLength={2}
+              />
+              <div className="flex items-center justify-center">
+                <span className="text-red-600 text-4xl font-bold">×</span>
+              </div>
+              <input
+                type="text"
+                placeholder="00"
+                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                data-testid="maryaj-num2-input"
+                maxLength={2}
+              />
+              <input
+                type="text"
+                placeholder="0000-9999"
+                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-lg focus:outline-none focus:border-red-700"
+                data-testid="maryaj-range-input"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-3">
+              <input
+                type="text"
+                placeholder="Montan"
+                className="px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl focus:outline-none focus:border-red-700"
+                data-testid="maryaj-montan-input"
+              />
+              <button
+                className="bg-red-600 text-white rounded-full flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors"
+                data-testid="maryaj-add-button"
+              >
+                <Plus size={32} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Placeholder for other tabs */}
+        {(activeTab === 'loto1' || activeTab === 'loto3' || activeTab === 'loto4' || activeTab === 'loto5' || activeTab === 'loto6' || activeTab === 'loto7') && (
+          <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
+            <div className="text-center text-gray-500 py-4">
+              Interface pou {activeTab} pral disponib byento...
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="grid grid-cols-3 gap-3 mb-4">
