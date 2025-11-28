@@ -62,6 +62,11 @@ class AdminLogin(BaseModel):
     email: EmailStr
     password: str
 
+class PasswordReset(BaseModel):
+    email: EmailStr
+    id_number: str
+    new_password: str
+
 class AdminResponse(BaseModel):
     id: str
     email: str
