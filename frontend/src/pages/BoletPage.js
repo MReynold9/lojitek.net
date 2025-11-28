@@ -104,16 +104,14 @@ const BoletPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="bg-[#0a2447] text-white px-4 py-3 flex items-center justify-between">
-        <button onClick={() => navigate('/lotri')} className="p-2" data-testid="back-button">
-          <ArrowLeft size={24} />
+      <header className="bg-[#0a2447] text-white px-2 py-2 flex items-center justify-between">
+        <button onClick={() => navigate('/lotri')} className="p-1" data-testid="back-button">
+          <ArrowLeft size={20} />
         </button>
-        <h1 className="text-2xl font-bold tracking-wider" style={{fontFamily: 'Arial, sans-serif'}}>LOTO SUN</h1>
-        <div className="flex items-center gap-2">
-          <button className="p-2">
-            <Bell size={24} />
-          </button>
-        </div>
+        <h1 className="text-lg font-bold tracking-wider" style={{fontFamily: 'Arial, sans-serif'}}>LOTO SUN</h1>
+        <button className="p-1">
+          <Bell size={20} />
+        </button>
       </header>
 
       {/* Orange divider */}
