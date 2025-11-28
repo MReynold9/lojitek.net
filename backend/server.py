@@ -298,6 +298,60 @@ async def get_admin_stats(current_admin: AdminResponse = Depends(get_current_adm
         "admin_name": current_admin.full_name
     }
 
+# Lottery Ticket Endpoints
+@api_router.post("/tickets", response_model=TicketResponse)
+async def create_ticket(ticket_data: TicketCreate, current_admin: AdminResponse = Depends(get_current_admin)):
+    # Create ticket
+    ticket_dict = ticket_data.model_dump()
+    ticket_obj = Ticket(admin_id=current_admin.id, **ticket_dict)
+    
+    # Save to database
+    doc = ticket_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.tickets.insert_one(doc)
+    
+    # Convert back for response
+    if isinstance(doc['created_at'], str):
+        doc['created_at'] = datetime.fromisoformat(doc['created_at'])
+    
+    return TicketResponse(**{k: v for k, v in doc.items() if k != '_id'})
+
+@api_router.get("/tickets", response_model=List[TicketResponse])
+async def get_tickets(current_admin: AdminResponse = Depends(get_current_admin)):
+    # Get all tickets for current admin
+    tickets = await db.tickets.find({"admin_id": current_admin.id}, {"_id": 0}).to_list(1000)
+    
+    # Convert ISO strings to datetime
+    for ticket in tickets:
+        if isinstance(ticket['created_at'], str):
+            ticket['created_at'] = datetime.fromisoformat(ticket['created_at'])
+    
+    return [TicketResponse(**ticket) for ticket in tickets]
+
+@api_router.delete("/tickets/{ticket_id}")
+async def delete_ticket(ticket_id: str, current_admin: AdminResponse = Depends(get_current_admin)):
+    # Delete ticket
+    result = await db.tickets.delete_one({"id": ticket_id, "admin_id": current_admin.id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Tikè pa jwenn")
+    
+    return {"message": "Tikè efase"}
+
+@api_router.get("/tickets/totals")
+async def get_ticket_totals(current_admin: AdminResponse = Depends(get_current_admin)):
+    # Get all tickets for current admin
+    tickets = await db.tickets.find({"admin_id": current_admin.id}, {"_id": 0}).to_list(1000)
+    
+    total_boul = len(tickets)
+    total_miz = sum(ticket['montan'] for ticket in tickets)
+    
+    return {
+        "total_boul": total_boul,
+        "total_miz": total_miz
+    }
+
 # Include router
 app.include_router(api_router)
 
