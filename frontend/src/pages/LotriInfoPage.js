@@ -144,9 +144,8 @@ const LotriInfoPage = () => {
                 {/* Phone screen */}
                 <div className="absolute inset-3 bg-[#0c2d52] rounded-2xl flex items-center justify-center overflow-hidden">
                   <div className="text-center px-4">
-                    <div className="text-[#00d4ff] text-4xl font-bold mb-1">loq</div>
-                    <div className="text-white text-3xl font-bold mb-2">Lojitek</div>
-                    <p className="text-gray-300 text-sm">Solisyon entèlijan poublans oy</p>
+                    <div className="text-white text-4xl font-bold mb-2">Lojitek</div>
+                    <p className="text-gray-300 text-sm">Solisyon entèlijan pou biznis ou</p>
                   </div>
                 </div>
                 {/* Home button */}
