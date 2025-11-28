@@ -67,6 +67,33 @@ class PasswordReset(BaseModel):
     id_number: str
     new_password: str
 
+# Lottery Ticket Models
+class Ticket(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    admin_id: str
+    jwet: str  # bolet, maryaj, loto1, etc.
+    boul: Optional[str] = None  # For bolet: "65", For maryaj: "12x34"
+    ops: Optional[str] = ""
+    montan: int
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TicketCreate(BaseModel):
+    jwet: str
+    boul: Optional[str] = None
+    ops: Optional[str] = ""
+    montan: int
+
+class TicketResponse(BaseModel):
+    id: str
+    admin_id: str
+    jwet: str
+    boul: Optional[str]
+    ops: Optional[str]
+    montan: int
+    created_at: datetime
+
 class Company(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
