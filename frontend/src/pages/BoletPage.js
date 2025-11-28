@@ -37,21 +37,76 @@ const BoletPage = () => {
     }
   };
 
-  const handleAddTicket = () => {
-    if (numeroInput && montanInput) {
-      setTickets([...tickets, {
-        jwet: 'Bolet',
-        boul: parseInt(numeroInput),
-        ops: '',
-        montan: parseInt(montanInput)
-      }]);
-      setNumeroInput('');
-      setMontanInput('');
+  const handleAddTicket = async () => {
+    if (activeTab === 'bolet' && numeroInput && montanInput) {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(`${API}/tickets`, {
+          jwet: 'Bolet',
+          boul: numeroInput,
+          ops: '',
+          montan: parseInt(montanInput)
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Reload tickets
+        await loadTickets();
+        
+        // Clear inputs
+        setNumeroInput('');
+        setMontanInput('');
+      } catch (error) {
+        console.error('Error adding ticket:', error);
+        alert('Erè nan ajoute tikè');
+      } finally {
+        setLoading(false);
+      }
+    } else if (activeTab === 'maryaj' && maryajNum1 && maryajNum2 && maryajMontan) {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(`${API}/tickets`, {
+          jwet: 'Maryaj',
+          boul: `${maryajNum1}x${maryajNum2}`,
+          ops: '',
+          montan: parseInt(maryajMontan)
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Reload tickets
+        await loadTickets();
+        
+        // Clear inputs
+        setMaryajNum1('');
+        setMaryajNum2('');
+        setMaryajMontan('');
+      } catch (error) {
+        console.error('Error adding maryaj:', error);
+        alert('Erè nan ajoute maryaj');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleDeleteTicket = (index) => {
-    setTickets(tickets.filter((_, i) => i !== index));
+  const handleDeleteTicket = async (ticketId) => {
+    if (window.confirm('Ou vle efase tikè sa a?')) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`${API}/tickets/${ticketId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Reload tickets
+        await loadTickets();
+      } catch (error) {
+        console.error('Error deleting ticket:', error);
+        alert('Erè nan efase tikè');
+      }
+    }
   };
 
   return (
