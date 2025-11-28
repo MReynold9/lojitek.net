@@ -251,8 +251,8 @@ const BoletPage = () => {
         <div className="h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mb-2"></div>
 
         {/* Table Header */}
-        <div className="bg-white border-b-2 border-gray-300">
-          <div className="grid grid-cols-5 px-4 py-3 font-bold text-sm">
+        <div className="bg-white border-b border-gray-300">
+          <div className="grid grid-cols-5 px-2 py-1.5 font-bold text-xs">
             <div>Jwet</div>
             <div>Boul</div>
             <div>Ops</div>
@@ -264,15 +264,15 @@ const BoletPage = () => {
         {/* Tickets List */}
         <div className="bg-white">
           {tickets.map((ticket, index) => (
-            <div key={ticket.id} className="grid grid-cols-5 px-4 py-3 border-b border-dotted border-gray-400 items-center">
+            <div key={ticket.id} className="grid grid-cols-5 px-2 py-2 border-b border-dotted border-gray-400 items-center text-xs">
               <div className="font-semibold">{ticket.jwet}</div>
-              <div className="font-bold text-lg">{ticket.boul}</div>
+              <div className="font-bold text-sm">{ticket.boul}</div>
               <div>{ticket.ops || '-'}</div>
               <div className="font-semibold">{ticket.montan}</div>
               <div className="text-center">
                 <button
                   onClick={() => handleDeleteTicket(ticket.id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors"
+                  className="bg-red-600 text-white px-2 py-0.5 rounded text-xs hover:bg-red-700 transition-colors"
                   data-testid={`delete-${index}`}
                 >
                   ✕
@@ -284,9 +284,9 @@ const BoletPage = () => {
 
         {/* Totals */}
         <div className="bg-white border-t-2 border-gray-800">
-          <div className="grid grid-cols-2 px-4 py-4">
-            <div className="text-xl font-bold">Total Boul {totalBoul}</div>
-            <div className="text-xl font-bold text-right">Total Miz {totalMiz}</div>
+          <div className="grid grid-cols-2 px-2 py-2">
+            <div className="text-sm font-bold">Total Boul {totalBoul}</div>
+            <div className="text-sm font-bold text-right">Total Miz {totalMiz}</div>
           </div>
         </div>
       </main>
