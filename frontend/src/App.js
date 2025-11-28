@@ -155,6 +155,14 @@ function App() {
               }
             />
             <Route
+              path="/lotri/info"
+              element={
+                <ProtectedRoute>
+                  {admin?.has_company ? <LotriInfoPage /> : <Navigate to="/company-setup" replace />}
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/paryaj"
               element={
                 <ProtectedRoute>
