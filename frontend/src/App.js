@@ -7,6 +7,7 @@ import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import CompanySetupPage from '@/pages/CompanySetupPage';
+import HomePage from '@/pages/HomePage';
 import DashboardPage from '@/pages/DashboardPage';
 import LotriPage from '@/pages/LotriPage';
 import ParyajPage from '@/pages/ParyajPage';
@@ -27,14 +28,14 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Company Setup Route - requires auth but redirects to dashboard if company exists
+// Company Setup Route - requires auth but redirects to home if company exists
 const CompanySetupRoute = ({ children, admin }) => {
   const token = localStorage.getItem('token');
   if (!token) {
     return <Navigate to="/" replace />;
   }
   if (admin?.has_company) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/home" replace />;
   }
   return children;
 };
@@ -107,16 +108,24 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <LandingPage />} />
-            <Route path="/login" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <LoginPage />} />
-            <Route path="/register" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <RegisterPage />} />
-            <Route path="/reset-password" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <ResetPasswordPage />} />
+            <Route path="/" element={admin ? (admin.has_company ? <Navigate to="/home" replace /> : <Navigate to="/company-setup" replace />) : <LandingPage />} />
+            <Route path="/login" element={admin ? (admin.has_company ? <Navigate to="/home" replace /> : <Navigate to="/company-setup" replace />) : <LoginPage />} />
+            <Route path="/register" element={admin ? (admin.has_company ? <Navigate to="/home" replace /> : <Navigate to="/company-setup" replace />) : <RegisterPage />} />
+            <Route path="/reset-password" element={admin ? (admin.has_company ? <Navigate to="/home" replace /> : <Navigate to="/company-setup" replace />) : <ResetPasswordPage />} />
             <Route
               path="/company-setup"
               element={
                 <CompanySetupRoute admin={admin}>
                   <CompanySetupPage />
                 </CompanySetupRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  {admin?.has_company ? <HomePage /> : <Navigate to="/company-setup" replace />}
+                </ProtectedRoute>
               }
             />
             <Route
