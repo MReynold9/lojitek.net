@@ -2,11 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '@/App';
-import { ArrowLeft, ArrowRight, Bell, Plus, Home, FileText, HelpCircle, Copy, Menu } from 'lucide-react';
+import { ArrowLeft, Bell, Plus, Home, FileText, HelpCircle, Copy, Menu } from 'lucide-react';
 
 const BoletPage = () => {
   const navigate = useNavigate();
-  const { admin, API } = useContext(AuthContext);
+  const { API } = useContext(AuthContext);
   
   const [activeTab, setActiveTab] = useState('bolet');
   const [numeroInput, setNumeroInput] = useState('');
