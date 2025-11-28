@@ -282,57 +282,44 @@ const BoletPage = () => {
           ))}
         </div>
 
-        {/* Totals */}
-        <div className="bg-white border-t-2 border-gray-800 pb-2">
-          <div className="grid grid-cols-2 px-2 py-2">
-            <div className="text-sm font-bold">Total Boul {totalBoul}</div>
-            <div className="text-sm font-bold text-right">Total Miz {totalMiz}</div>
-          </div>
-          
-          {/* Bottom Info Section */}
-          <div className="px-2 space-y-2">
-            {/* Bank and Tiraj */}
-            <div className="flex gap-2">
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-semibold">Bank</span>
-                <select className="border border-gray-400 rounded px-1 py-0.5 text-xs">
-                  <option>#01</option>
-                  <option>#02</option>
-                  <option>#03</option>
-                </select>
-              </div>
-              <select className="flex-1 border border-gray-400 rounded px-2 py-0.5 text-xs">
-                <option>Tennessee 12:28PM</option>
-                <option>New York 12:30PM</option>
-                <option>Florida 01:00PM</option>
-                <option>Georgia 01:30PM</option>
-                <option>Texas 02:00PM</option>
+        {/* Bottom Section - Bank, Tiraj, Ticket Info */}
+        <div className="bg-gray-100 p-2">
+          {/* Bank and Tiraj */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-semibold">Bank</span>
+              <select className="border border-gray-400 rounded px-2 py-1 text-xs bg-white">
+                <option>#01</option>
+                <option>#02</option>
+                <option>#03</option>
               </select>
             </div>
-            
-            {/* Ticket Number */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold">Nimewo Tikè:</span>
-              <span className="text-xs font-bold text-blue-600">#{Math.floor(Math.random() * 90000000) + 10000000}</span>
+            <select className="flex-1 border border-gray-400 rounded px-2 py-1 text-xs bg-white">
+              <option>Tennessee 12:28PM</option>
+              <option>New York 12:30PM</option>
+              <option>Florida 01:00PM</option>
+              <option>Georgia 01:30PM</option>
+            </select>
+          </div>
+          
+          {/* Ticket Number */}
+          <div className="text-xs mb-1">
+            <span className="font-semibold">Nimewo Tikè: </span>
+            <span className="text-blue-600 font-bold">#{Math.floor(Math.random() * 90000000) + 10000000}</span>
+          </div>
+          
+          {/* Date Time */}
+          <div className="text-xs mb-2">
+            <span className="font-semibold">Dat ak Lè: </span>
+            <span>{new Date().toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+          </div>
+          
+          {/* Totals */}
+          <div className="bg-white border-t-2 border-gray-800 px-2 py-2">
+            <div className="flex justify-between">
+              <div className="text-sm font-bold">Total Boul {totalBoul}</div>
+              <div className="text-sm font-bold">Total Miz {totalMiz}</div>
             </div>
-            
-            {/* Date and Time */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold">Dat ak Lè:</span>
-              <span className="text-xs">{new Date().toLocaleString('en-US', { 
-                month: '2-digit', 
-                day: '2-digit', 
-                year: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-              }).replace(',', '')}</span>
-            </div>
-            
-            {/* Print Button */}
-            <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2 rounded-lg text-sm">
-              ENPRIME
-            </button>
           </div>
         </div>
       </main>
