@@ -6,6 +6,7 @@ import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
+import CompanySetupPage from '@/pages/CompanySetupPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LotriPage from '@/pages/LotriPage';
 import ParyajPage from '@/pages/ParyajPage';
@@ -26,6 +27,18 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Company Setup Route - requires auth but redirects to dashboard if company exists
+const CompanySetupRoute = ({ children, admin }) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  if (admin?.has_company) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
 function App() {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +52,15 @@ function App() {
           const response = await axios.get(`${API}/auth/me`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setAdmin(response.data);
+          // Check if admin has company
+          try {
+            await axios.get(`${API}/company/my-company`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setAdmin({ ...response.data, has_company: true });
+          } catch {
+            setAdmin({ ...response.data, has_company: false });
+          }
         } catch (error) {
           localStorage.removeItem('token');
         }
@@ -49,14 +70,28 @@ function App() {
     checkAuth();
   }, []);
 
-  const login = (token, adminData) => {
+  const login = async (token, adminData) => {
     localStorage.setItem('token', token);
-    setAdmin(adminData);
+    // Check if admin has company
+    try {
+      await axios.get(`${API}/company/my-company`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdmin({ ...adminData, has_company: true });
+    } catch {
+      setAdmin({ ...adminData, has_company: false });
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setAdmin(null);
+  };
+
+  const updateAdminCompanyStatus = () => {
+    if (admin) {
+      setAdmin({ ...admin, has_company: true });
+    }
   };
 
   if (loading) {
@@ -68,19 +103,27 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ admin, login, logout, API }}>
+    <AuthContext.Provider value={{ admin, login, logout, updateAdminCompanyStatus, API }}>
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={admin ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
-            <Route path="/login" element={admin ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-            <Route path="/register" element={admin ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
-            <Route path="/reset-password" element={admin ? <Navigate to="/dashboard" replace /> : <ResetPasswordPage />} />
+            <Route path="/" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <LandingPage />} />
+            <Route path="/login" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <LoginPage />} />
+            <Route path="/register" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <RegisterPage />} />
+            <Route path="/reset-password" element={admin ? (admin.has_company ? <Navigate to="/dashboard" replace /> : <Navigate to="/company-setup" replace />) : <ResetPasswordPage />} />
+            <Route
+              path="/company-setup"
+              element={
+                <CompanySetupRoute admin={admin}>
+                  <CompanySetupPage />
+                </CompanySetupRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  {admin?.has_company ? <DashboardPage /> : <Navigate to="/company-setup" replace />}
                 </ProtectedRoute>
               }
             />
@@ -88,7 +131,7 @@ function App() {
               path="/lotri"
               element={
                 <ProtectedRoute>
-                  <LotriPage />
+                  {admin?.has_company ? <LotriPage /> : <Navigate to="/company-setup" replace />}
                 </ProtectedRoute>
               }
             />
@@ -96,7 +139,7 @@ function App() {
               path="/paryaj"
               element={
                 <ProtectedRoute>
-                  <ParyajPage />
+                  {admin?.has_company ? <ParyajPage /> : <Navigate to="/company-setup" replace />}
                 </ProtectedRoute>
               }
             />
@@ -104,7 +147,7 @@ function App() {
               path="/casino"
               element={
                 <ProtectedRoute>
-                  <CasinoPage />
+                  {admin?.has_company ? <CasinoPage /> : <Navigate to="/company-setup" replace />}
                 </ProtectedRoute>
               }
             />
