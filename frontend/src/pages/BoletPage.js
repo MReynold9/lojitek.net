@@ -138,6 +138,28 @@ const BoletPage = () => {
 
       {/* Main Content */}
       <main className="p-2 pb-16">
+        {/* Bank and Tiraj Section */}
+        <div className="bg-white rounded-lg p-2 mb-2 shadow">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-semibold">Bank</label>
+              <select className="border border-gray-300 rounded px-2 py-1 text-xs">
+                <option>#01</option>
+                <option>#02</option>
+                <option>#03</option>
+              </select>
+            </div>
+            <div className="flex-1">
+              <select className="w-full border border-gray-300 rounded px-2 py-1 text-xs">
+                <option>Tennessee 12:28PM</option>
+                <option>New York 12:30PM</option>
+                <option>Florida 01:00PM</option>
+                <option>Georgia 01:30PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         {/* Dynamic Header */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-2 mb-2 flex items-center justify-between">
           <h2 className="text-xl font-bold capitalize">{activeTab === 'bolet' ? 'Bolet' : activeTab === 'maryaj' ? 'Maryaj' : activeTab}</h2>
