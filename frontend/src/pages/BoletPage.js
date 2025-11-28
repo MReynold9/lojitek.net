@@ -337,15 +337,15 @@ const BoletPage = () => {
         {/* Tickets List */}
         <div className="bg-white">
           {tickets.map((ticket, index) => (
-            <div key={index} className="grid grid-cols-5 px-4 py-3 border-b border-dotted border-gray-400 items-center">
+            <div key={ticket.id} className="grid grid-cols-5 px-4 py-3 border-b border-dotted border-gray-400 items-center">
               <div className="font-semibold">{ticket.jwet}</div>
               <div className="font-bold text-lg">{ticket.boul}</div>
-              <div>{ticket.ops}</div>
+              <div>{ticket.ops || '-'}</div>
               <div className="font-semibold">{ticket.montan}</div>
               <div className="text-center">
                 <button
-                  onClick={() => handleDeleteTicket(index)}
-                  className="bg-red-600 text-white px-3 py-1 rounded"
+                  onClick={() => handleDeleteTicket(ticket.id)}
+                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors"
                   data-testid={`delete-${index}`}
                 >
                   ✕
