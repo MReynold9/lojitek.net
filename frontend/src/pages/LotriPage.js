@@ -49,7 +49,11 @@ const LotriPage = () => {
 
       {/* Info Button */}
       <div className="relative z-10 px-4 mb-6">
-        <button className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-[#1a3a5c] border-2 border-cyan-400/50 rounded-full py-3 px-6 text-white font-semibold text-lg hover:bg-[#244a6c] transition-all">
+        <button 
+          onClick={() => navigate('/lotri/info')}
+          className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-[#1a3a5c] border-2 border-cyan-400/50 rounded-full py-3 px-6 text-white font-semibold text-lg hover:bg-[#244a6c] transition-all"
+          data-testid="info-service-button"
+        >
           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
             <span className="text-[#1a3a5c] text-xl">i</span>
           </div>
