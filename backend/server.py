@@ -185,6 +185,28 @@ async def login(credentials: AdminLogin):
 async def get_me(current_admin: AdminResponse = Depends(get_current_admin)):
     return current_admin
 
+@api_router.post("/auth/reset-password")
+async def reset_password(reset_data: PasswordReset):
+    # Find admin by email and ID number
+    admin = await db.admins.find_one({
+        "email": reset_data.email,
+        "id_number": reset_data.id_number
+    })
+    
+    if not admin:
+        raise HTTPException(status_code=404, detail="Imèl oswa nimewo idantite envalid")
+    
+    # Hash new password
+    new_hashed_password = hash_password(reset_data.new_password)
+    
+    # Update password
+    await db.admins.update_one(
+        {"email": reset_data.email},
+        {"$set": {"password": new_hashed_password}}
+    )
+    
+    return {"message": "Modpas chanje ak siksè"}
+
 @api_router.get("/admin/stats")
 async def get_admin_stats(current_admin: AdminResponse = Depends(get_current_admin)):
     # Return some basic stats for the admin dashboard
