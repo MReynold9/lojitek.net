@@ -141,9 +141,9 @@ const BoletPage = () => {
 
       {/* Main Content */}
       <main className="p-4 pb-20">
-        {/* Bolet Header */}
+        {/* Dynamic Header based on active tab */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 mb-4 flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Bolet</h2>
+          <h2 className="text-3xl font-bold capitalize">{activeTab === 'bolet' ? 'Bolet' : activeTab === 'maryaj' ? 'Maryaj' : activeTab}</h2>
           <div className="text-right">
             <div className="text-sm">VD464, Balans: <span className="font-bold">300 Pwen</span></div>
           </div>
