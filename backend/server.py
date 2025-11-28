@@ -67,6 +67,25 @@ class PasswordReset(BaseModel):
     id_number: str
     new_password: str
 
+class Company(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    admin_id: str
+    logo_base64: Optional[str] = None
+    company_name: str
+    slogan: str
+    company_address: str
+    company_phone: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CompanyCreate(BaseModel):
+    logo_base64: Optional[str] = None
+    company_name: str
+    slogan: str
+    company_address: str
+    company_phone: str
+
 class AdminResponse(BaseModel):
     id: str
     email: str
@@ -76,10 +95,12 @@ class AdminResponse(BaseModel):
     address: str
     photo_base64: Optional[str] = None
     created_at: datetime
+    has_company: bool = False
 
 class LoginResponse(BaseModel):
     token: str
     admin: AdminResponse
+    has_company: bool = False
 
 # Helper functions
 def hash_password(password: str) -> str:
