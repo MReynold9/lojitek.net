@@ -365,14 +365,14 @@ const BoletPage = () => {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-[#0a2447] border-t-2 border-orange-500 px-4 py-3">
+      <nav className="fixed bottom-0 left-0 right-0 bg-[#0a1f3d] px-2 py-2">
         <div className="max-w-7xl mx-auto flex justify-around items-center">
           <button
             onClick={() => navigate('/home')}
             className="flex flex-col items-center gap-1 text-orange-500"
             data-testid="nav-home"
           >
-            <Home size={24} />
+            <Home size={28} />
             <span className="text-xs font-semibold">Akey</span>
           </button>
           
@@ -380,7 +380,7 @@ const BoletPage = () => {
             className="flex flex-col items-center gap-1 text-white hover:text-orange-500 transition-colors"
             data-testid="nav-results"
           >
-            <FileText size={24} />
+            <FileText size={28} />
             <span className="text-xs">Rezilta</span>
           </button>
           
@@ -388,7 +388,7 @@ const BoletPage = () => {
             className="flex flex-col items-center gap-1 text-white hover:text-orange-500 transition-colors"
             data-testid="nav-help"
           >
-            <HelpCircle size={24} />
+            <HelpCircle size={28} />
             <span className="text-xs">Ed</span>
           </button>
           
@@ -396,7 +396,7 @@ const BoletPage = () => {
             className="flex flex-col items-center gap-1 text-white hover:text-orange-500 transition-colors"
             data-testid="nav-copy"
           >
-            <Copy size={24} />
+            <Copy size={28} />
             <span className="text-xs">Kopi</span>
           </button>
           
@@ -404,7 +404,7 @@ const BoletPage = () => {
             className="flex flex-col items-center gap-1 text-white hover:text-orange-500 transition-colors"
             data-testid="nav-menu"
           >
-            <Menu size={24} />
+            <Menu size={28} />
             <span className="text-xs">Meni</span>
           </button>
         </div>
