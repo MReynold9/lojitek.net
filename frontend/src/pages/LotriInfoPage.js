@@ -30,31 +30,10 @@ const LotriInfoPage = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6 relative">
-        {/* Circuit pattern background - FULL PAGE */}
-        <svg className="absolute inset-0 w-full h-full opacity-30 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-          {/* Top circuit lines */}
-          <path d="M 200 50 L 400 50 L 400 150" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <path d="M 800 80 L 1000 80 L 1000 200 L 1100 200" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <circle cx="400" cy="50" r="5" fill="#00d4ff"/>
-          <circle cx="1000" cy="80" r="5" fill="#00d4ff"/>
-          
-          {/* Middle circuit lines */}
-          <path d="M 100 400 L 300 400" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <path d="M 900 500 L 1100 500 L 1100 650" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <circle cx="300" cy="400" r="5" fill="#00d4ff"/>
-          <circle cx="1100" cy="500" r="5" fill="#cyan"/>
-          
-          {/* Bottom circuit lines */}
-          <path d="M 200 800 L 400 800 L 400 900" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <path d="M 900 850 L 1100 850" stroke="#00d4ff" strokeWidth="2" fill="none"/>
-          <circle cx="400" cy="800" r="5" fill="#00d4ff"/>
-          <circle cx="1100" cy="850" r="5" fill="#cyan"/>
-        </svg>
-
         {/* Large Logo at top */}
         <div className="relative z-10 mb-8">
           <div className="text-[#00d4ff] text-6xl font-bold mb-2" style={{fontFamily: 'Arial, sans-serif', letterSpacing: '2px'}}>
-            loq Lojitek
+            Lojitek
           </div>
           <p className="text-gray-400 text-lg">Solisyon entèlijan pou biznis ou</p>
         </div>
