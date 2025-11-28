@@ -46,59 +46,89 @@ const HomePage = () => {
   ];
 
   const ServiceIcon = ({ type }) => {
-    const iconStyle = "w-16 h-16 rounded-full flex items-center justify-center";
+    const iconStyle = "w-20 h-20 rounded-full flex items-center justify-center";
     
     switch(type) {
       case 'system':
         return (
-          <div className={`${iconStyle} bg-white border-4 border-orange-500`}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0a2447" strokeWidth="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
+          <div className={`${iconStyle} bg-white border-4 border-gray-300`}>
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+              <rect x="8" y="8" width="48" height="32" rx="2" fill="#1a3a5c" stroke="#1a3a5c" strokeWidth="2"/>
+              <rect x="12" y="12" width="40" height="24" fill="#4a90e2"/>
+              <line x1="20" y1="48" x2="44" y2="48" stroke="#1a3a5c" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="32" y1="40" x2="32" y2="48" stroke="#1a3a5c" strokeWidth="2"/>
             </svg>
           </div>
         );
       case 'equipment':
         return (
-          <div className={`${iconStyle} bg-gradient-to-br from-orange-400 to-orange-600`}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <path d="M3 9h18" />
-              <path d="M9 21V9" />
+          <div className={`${iconStyle} bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600`}>
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+              <rect x="12" y="12" width="40" height="30" rx="2" fill="white"/>
+              <rect x="16" y="16" width="32" height="8" fill="#ff8c00"/>
+              <rect x="16" y="28" width="32" height="2" fill="#333"/>
+              <rect x="16" y="32" width="32" height="2" fill="#333"/>
+              <rect x="16" y="36" width="32" height="2" fill="#333"/>
             </svg>
           </div>
         );
       case 'lotri':
         return (
-          <div className={`${iconStyle} bg-[#1a3a5c]`}>
-            <div className="flex gap-1">
-              <div className="w-7 h-7 rounded-full bg-yellow-400 border-2 border-white flex items-center justify-center text-xs font-bold text-[#1a3a5c]">8</div>
-              <div className="w-7 h-7 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-xs font-bold text-white">9</div>
+          <div className={`${iconStyle} bg-[#1a3a5c] relative`}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-yellow-400 font-bold text-xs mb-1">LOTRI</div>
+                <div className="flex gap-1 justify-center">
+                  <div className="w-5 h-5 rounded-full bg-yellow-400 border border-white flex items-center justify-center text-[10px] font-bold text-[#1a3a5c]">8</div>
+                  <div className="w-5 h-5 rounded-full bg-blue-500 border border-white flex items-center justify-center text-[10px] font-bold text-white">9</div>
+                  <div className="w-5 h-5 rounded-full bg-green-500 border border-white flex items-center justify-center text-[10px] font-bold text-white">3</div>
+                </div>
+              </div>
             </div>
           </div>
         );
       case 'paryaj':
         return (
-          <div className={`${iconStyle} bg-[#1a3a5c]`}>
-            <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-white border-2 border-orange-500"></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                </svg>
+          <div className={`${iconStyle} bg-[#1a3a5c] relative`}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-orange-400 font-bold text-[9px] leading-tight mb-1">
+                  <div>PARYAJ</div>
+                  <div>SPORTIF</div>
+                </div>
+                <div className="flex gap-1 justify-center items-center">
+                  <div className="w-5 h-5 rounded-full bg-white border border-orange-500 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    </div>
+                  </div>
+                  <div className="w-5 h-5 rounded-full bg-orange-600 relative">
+                    <div className="absolute inset-1 rounded-full border border-white"></div>
+                  </div>
+                  <div className="w-5 h-5 rounded-full bg-yellow-500"></div>
+                </div>
               </div>
             </div>
           </div>
         );
       case 'casino':
         return (
-          <div className={`${iconStyle} bg-[#1a3a5c]`}>
-            <div className="grid grid-cols-2 gap-1">
-              <div className="w-5 h-5 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">A</div>
-              <div className="w-5 h-5 bg-black rounded flex items-center justify-center text-white text-xs font-bold">♠</div>
-              <div className="w-5 h-5 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">♥</div>
-              <div className="w-5 h-5 bg-black rounded flex items-center justify-center text-white text-xs font-bold">K</div>
+          <div className={`${iconStyle} bg-[#1a3a5c] relative`}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
+                {/* Roulette wheel */}
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-800 border-2 border-yellow-400 relative">
+                  <div className="absolute inset-1 rounded-full border-2 border-yellow-400"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-4 h-4 rounded-full bg-yellow-400"></div>
+                  </div>
+                  {/* Cards overlay */}
+                  <div className="absolute -top-1 -right-1 flex gap-0.5">
+                    <div className="w-3 h-4 bg-white rounded-sm flex items-center justify-center text-[8px] font-bold text-red-600">A</div>
+                    <div className="w-3 h-4 bg-white rounded-sm flex items-center justify-center text-[8px] font-bold">♠</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
