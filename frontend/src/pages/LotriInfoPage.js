@@ -117,42 +117,6 @@ const LotriInfoPage = () => {
               </p>
             </div>
           </div>
-
-          {/* RIGHT COLUMN - Card with Phone */}
-          <div className="flex justify-center items-start lg:sticky lg:top-20">
-            {/* Red card reader with phone INSIDE */}
-            <div className="relative w-96 h-64 bg-gradient-to-br from-orange-600 to-red-700 rounded-3xl shadow-2xl border-4 border-black">
-              {/* Top black stripe */}
-              <div className="absolute top-10 left-0 right-0 h-12 bg-black"></div>
-              
-              {/* Contactless payment icon */}
-              <div className="absolute top-14 right-8">
-                <svg width="60" height="50" viewBox="0 0 60 50" fill="none">
-                  <path d="M 12 25 Q 24 12 36 25" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none"/>
-                  <path d="M 6 30 Q 24 6 42 30" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none"/>
-                  <path d="M 0 35 Q 24 0 48 35" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none"/>
-                </svg>
-              </div>
-
-              {/* Sunm label */}
-              <div className="absolute bottom-12 left-8 text-white text-2xl font-semibold tracking-wide">
-                sunm
-              </div>
-
-              {/* Phone INSIDE card - overlapping */}
-              <div className="absolute bottom-6 right-8 w-52 h-80 bg-gradient-to-b from-gray-100 to-gray-200 rounded-3xl border-4 border-gray-400 shadow-2xl">
-                {/* Phone screen */}
-                <div className="absolute inset-3 bg-[#0c2d52] rounded-2xl flex items-center justify-center overflow-hidden">
-                  <div className="text-center px-4">
-                    <div className="text-white text-4xl font-bold mb-2">Lojitek</div>
-                    <p className="text-gray-300 text-sm">Solisyon entèlijan pou biznis ou</p>
-                  </div>
-                </div>
-                {/* Home button */}
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-14 h-4 bg-gray-500 rounded-full"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
 
