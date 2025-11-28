@@ -232,6 +232,37 @@ async def reset_password(reset_data: PasswordReset):
     
     return {"message": "Modpas chanje ak siksè"}
 
+@api_router.post("/company/create")
+async def create_company(company_data: CompanyCreate, current_admin: AdminResponse = Depends(get_current_admin)):
+    # Check if admin already has a company
+    existing = await db.companies.find_one({"admin_id": current_admin.id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Ou gentan gen yon antrepriz")
+    
+    # Create company object
+    company_dict = company_data.model_dump()
+    company_obj = Company(admin_id=current_admin.id, **company_dict)
+    
+    # Save to database
+    doc = company_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.companies.insert_one(doc)
+    
+    return {"message": "Antrepriz kreye ak siksè", "company_id": company_obj.id}
+
+@api_router.get("/company/my-company")
+async def get_my_company(current_admin: AdminResponse = Depends(get_current_admin)):
+    company = await db.companies.find_one({"admin_id": current_admin.id}, {"_id": 0})
+    if not company:
+        raise HTTPException(status_code=404, detail="Ou poko gen antrepriz")
+    
+    # Convert ISO string to datetime
+    if isinstance(company['created_at'], str):
+        company['created_at'] = datetime.fromisoformat(company['created_at'])
+    
+    return company
+
 @api_router.get("/admin/stats")
 async def get_admin_stats(current_admin: AdminResponse = Depends(get_current_admin)):
     # Return some basic stats for the admin dashboard
