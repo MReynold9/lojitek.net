@@ -139,21 +139,26 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-[#0a2447]">
-      {/* Header with profile */}
-      <header className="bg-[#0a2447] border-b border-orange-500/30 px-4 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {admin?.photo_base64 && (
+      {/* Header with profile - PLACED ON LEFT */}
+      <header className="bg-[#0a2447] px-4 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4">
+            {admin?.photo_base64 ? (
               <img
                 src={admin.photo_base64}
                 alt="Profile"
-                className="w-14 h-14 rounded-full object-cover border-2 border-orange-500"
+                className="w-20 h-20 rounded-full object-cover border-4 border-orange-500 shadow-lg"
                 data-testid="admin-photo"
               />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 border-4 border-orange-500 shadow-lg flex items-center justify-center text-white text-3xl font-bold">
+                {admin?.full_name?.charAt(0) || 'U'}
+              </div>
             )}
             <div>
-              <h2 className="text-white font-bold text-lg" data-testid="admin-name">Byen vini {admin?.full_name}</h2>
-              <p className="text-orange-400 text-sm">👋</p>
+              <h2 className="text-white font-bold text-xl flex items-center gap-2" data-testid="admin-name">
+                Byen vini {admin?.full_name} <span className="text-2xl">👋</span>
+              </h2>
             </div>
           </div>
         </div>
