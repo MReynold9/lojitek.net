@@ -11,6 +11,7 @@ import HomePage from '@/pages/HomePage';
 import ConditionsPage from '@/pages/ConditionsPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LotriPage from '@/pages/LotriPage';
+import LotriInfoPage from '@/pages/LotriInfoPage';
 import ParyajPage from '@/pages/ParyajPage';
 import CasinoPage from '@/pages/CasinoPage';
 
