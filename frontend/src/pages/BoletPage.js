@@ -151,14 +151,14 @@ const BoletPage = () => {
 
         {/* Bolet Input */}
         {activeTab === 'bolet' && (
-          <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-            <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white rounded-xl p-2 mb-2 shadow">
+            <div className="grid grid-cols-3 gap-2">
               <input
                 type="text"
                 placeholder="00"
                 value={numeroInput}
                 onChange={(e) => setNumeroInput(e.target.value)}
-                className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl font-semibold focus:outline-none focus:border-blue-600"
+                className="px-2 py-2 border-2 border-[#0a2447] rounded-full text-center text-base font-semibold focus:outline-none focus:border-blue-600"
                 data-testid="numero-input"
                 maxLength={2}
               />
@@ -167,16 +167,16 @@ const BoletPage = () => {
                 placeholder="Montan"
                 value={montanInput}
                 onChange={(e) => setMontanInput(e.target.value)}
-                className="px-4 py-3 border-2 border-[#0a2447] rounded-full text-center text-xl focus:outline-none focus:border-blue-600"
+                className="px-2 py-2 border-2 border-[#0a2447] rounded-full text-center text-base focus:outline-none focus:border-blue-600"
                 data-testid="montan-input"
               />
               <button
                 onClick={handleAddTicket}
                 disabled={loading}
-                className="bg-[#0a2447] text-white rounded-full flex items-center justify-center text-3xl font-bold hover:bg-[#0c3058] transition-colors disabled:opacity-50"
+                className="bg-[#0a2447] text-white rounded-full flex items-center justify-center font-bold hover:bg-[#0c3058] transition-colors disabled:opacity-50"
                 data-testid="add-button"
               >
-                <Plus size={32} />
+                <Plus size={24} />
               </button>
             </div>
           </div>
