@@ -38,9 +38,9 @@ const LotriInfoPage = () => {
           <p className="text-gray-400 text-lg">Solisyon entèlijan pou biznis ou</p>
         </div>
 
-        {/* Main Layout: Text LEFT, Image RIGHT */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* LEFT COLUMN - Text Content */}
+        {/* Main Layout: Full Width Text */}
+        <div className="relative z-10 max-w-4xl">
+          {/* Text Content */}
           <div className="space-y-3 text-white">
             {/* Title */}
             <h2 className="text-4xl font-bold text-gray-200 mb-4">Sistèm Lotri</h2>
