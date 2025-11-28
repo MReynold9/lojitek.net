@@ -184,26 +184,24 @@ const BoletPage = () => {
 
         {/* Maryaj Input */}
         {activeTab === 'maryaj' && (
-          <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-            <div className="flex items-center gap-3">
+          <div className="bg-white rounded-xl p-2 mb-2 shadow">
+            <div className="flex items-center gap-1">
               <input
                 type="text"
                 placeholder="00"
                 value={maryajNum1}
                 onChange={(e) => setMaryajNum1(e.target.value)}
-                className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                className="w-14 px-1 py-2 border-2 border-red-600 rounded-full text-center text-base font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num1-input"
                 maxLength={2}
               />
-              <div className="flex items-center justify-center">
-                <span className="text-red-600 text-4xl font-bold">×</span>
-              </div>
+              <span className="text-red-600 text-xl font-bold">×</span>
               <input
                 type="text"
                 placeholder="00"
                 value={maryajNum2}
                 onChange={(e) => setMaryajNum2(e.target.value)}
-                className="w-24 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl font-semibold focus:outline-none focus:border-red-700"
+                className="w-14 px-1 py-2 border-2 border-red-600 rounded-full text-center text-base font-semibold focus:outline-none focus:border-red-700"
                 data-testid="maryaj-num2-input"
                 maxLength={2}
               />
@@ -212,16 +210,16 @@ const BoletPage = () => {
                 placeholder="Montan"
                 value={maryajMontan}
                 onChange={(e) => setMaryajMontan(e.target.value)}
-                className="flex-1 px-4 py-3 border-4 border-red-600 rounded-full text-center text-xl focus:outline-none focus:border-red-700"
+                className="flex-1 px-2 py-2 border-2 border-red-600 rounded-full text-center text-base focus:outline-none focus:border-red-700"
                 data-testid="maryaj-montan-input"
               />
               <button
                 onClick={handleAddTicket}
                 disabled={loading}
-                className="bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold hover:bg-red-700 transition-colors flex-shrink-0 disabled:opacity-50"
+                className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold hover:bg-red-700 transition-colors flex-shrink-0 disabled:opacity-50"
                 data-testid="maryaj-add-button"
               >
-                <Plus size={32} />
+                <Plus size={20} />
               </button>
             </div>
           </div>
