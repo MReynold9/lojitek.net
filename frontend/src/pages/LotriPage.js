@@ -175,6 +175,7 @@ const LotriPage = () => {
           {/* BOLÈT Button */}
           <div className="text-center mt-12">
             <button 
+              onClick={() => navigate('/lotri/bolet')}
               className="w-full max-w-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:via-orange-700 hover:to-orange-800 text-white text-3xl font-bold py-6 px-12 rounded-full shadow-2xl transform hover:scale-105 transition-all"
               data-testid="bolet-button"
             >
