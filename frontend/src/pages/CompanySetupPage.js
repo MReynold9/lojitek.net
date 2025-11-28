@@ -46,7 +46,9 @@ const CompanySetupPage = () => {
       await axios.post(`${API}/company/create`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      navigate('/dashboard');
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      navigate('/login');
     } catch (err) {
       setError(err.response?.data?.detail || 'Erè nan kreyasyon antrepriz');
     } finally {
