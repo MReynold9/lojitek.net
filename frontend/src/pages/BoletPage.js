@@ -235,20 +235,20 @@ const BoletPage = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <button className="bg-[#0a2447] text-white px-4 py-3 rounded-full font-bold text-sm hover:bg-[#0c3058] border-2 border-blue-400">
+        <div className="grid grid-cols-3 gap-1 mb-2">
+          <button className="bg-[#0a2447] text-white px-2 py-1.5 rounded-full font-semibold text-xs hover:bg-[#0c3058] border border-blue-400">
             OTO LOTO4
           </button>
-          <button className="bg-[#0a2447] text-white px-4 py-3 rounded-full font-bold text-sm hover:bg-[#0c3058] border-2 border-blue-400">
+          <button className="bg-[#0a2447] text-white px-2 py-1.5 rounded-full font-semibold text-xs hover:bg-[#0c3058] border border-blue-400">
             OUTI
           </button>
-          <button className="bg-[#0a2447] text-white px-4 py-3 rounded-full font-bold text-sm hover:bg-[#0c3058]">
+          <button className="bg-[#0a2447] text-white px-2 py-1.5 rounded-full font-semibold text-xs hover:bg-[#0c3058]">
             MARYAJ OTO
           </button>
         </div>
 
         {/* Orange divider */}
-        <div className="h-1 bg-gradient-to-r from-orange-500 to-orange-600 mb-4"></div>
+        <div className="h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 mb-2"></div>
 
         {/* Table Header */}
         <div className="bg-white border-b-2 border-gray-300">
