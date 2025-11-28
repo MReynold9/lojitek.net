@@ -130,6 +130,14 @@ function App() {
               }
             />
             <Route
+              path="/conditions"
+              element={
+                <ProtectedRoute>
+                  {admin?.has_company ? <ConditionsPage /> : <Navigate to="/company-setup" replace />}
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
