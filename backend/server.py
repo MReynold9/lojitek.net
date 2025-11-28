@@ -173,9 +173,9 @@ async def register(admin_data: AdminRegister):
     # Create token
     token = create_token(admin_obj.id)
     
-    # Return response
-    admin_response = AdminResponse(**admin_obj.model_dump())
-    return LoginResponse(token=token, admin=admin_response)
+    # Return response (has_company will be False initially)
+    admin_response = AdminResponse(**admin_obj.model_dump(), has_company=False)
+    return LoginResponse(token=token, admin=admin_response, has_company=False)
 
 @api_router.post("/auth/login", response_model=LoginResponse)
 async def login(credentials: AdminLogin):
