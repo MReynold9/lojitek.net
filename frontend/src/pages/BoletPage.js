@@ -5,22 +5,36 @@ import { ArrowLeft, ArrowRight, Bell, Plus, Home, FileText, HelpCircle, Copy, Me
 
 const BoletPage = () => {
   const navigate = useNavigate();
-  const { admin } = useContext(AuthContext);
+  const { admin, API } = useContext(AuthContext);
   
   const [activeTab, setActiveTab] = useState('bolet');
   const [numeroInput, setNumeroInput] = useState('');
   const [montanInput, setMontanInput] = useState('');
-  const [tickets, setTickets] = useState([
-    { jwet: 'Bolet', boul: 65, ops: '', montan: 100 },
-    { jwet: 'Bolet', boul: 23, ops: '', montan: 100 },
-    { jwet: 'Bolet', boul: 32, ops: '', montan: 100 },
-    { jwet: 'Bolet', boul: 17, ops: '', montan: 100 },
-    { jwet: 'Bolet', boul: 43, ops: '', montan: 100 },
-    { jwet: 'Bolet', boul: 10, ops: '', montan: 100 },
-  ]);
+  const [maryajNum1, setMaryajNum1] = useState('');
+  const [maryajNum2, setMaryajNum2] = useState('');
+  const [maryajMontan, setMaryajMontan] = useState('');
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const totalBoul = tickets.length;
   const totalMiz = tickets.reduce((sum, ticket) => sum + ticket.montan, 0);
+
+  // Load tickets on mount
+  useEffect(() => {
+    loadTickets();
+  }, []);
+
+  const loadTickets = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/tickets`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTickets(response.data);
+    } catch (error) {
+      console.error('Error loading tickets:', error);
+    }
+  };
 
   const handleAddTicket = () => {
     if (numeroInput && montanInput) {
