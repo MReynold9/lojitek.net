@@ -1,4 +1,4 @@
-name: Build Lotri APK
+name: Build Lojitek APK
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Setup project
         run: |
           mkdir -p www
-          echo '<html><body>Lotri</body></html>' > www/index.html
+          echo '<html><body>Lojitek</body></html>' > www/index.html
           printf '{\n  "appId": "net.lojitek.app",\n  "appName": "Lojitek",\n  "webDir": "www",\n  "server": {"url": "https://lojitek.net", "cleartext": true},\n  "android": {"allowMixedContent": true, "backgroundColor": "#0f172a"}\n}' > capacitor.config.json
 
       - uses: actions/setup-java@v4
@@ -33,6 +33,13 @@ jobs:
 
       - name: Add Android platform
         run: npx cap add android
+
+      - name: Force app name Lojitek
+        run: |
+          STRINGS=android/app/src/main/res/values/strings.xml
+          sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Lojitek</string>|g' $STRINGS
+          echo '--- strings.xml ---'
+          cat $STRINGS
 
       - name: Fix Kotlin duplicate class conflict
         run: |
@@ -50,10 +57,11 @@ jobs:
 
       - name: Register ThermalPrint plugin
         run: |
-          PKGDIR=android/app/src/main/java/net/lojitek/lotri
+          PKGDIR=android/app/src/main/java/net/lojitek/app
           mkdir -p $PKGDIR
           cp ThermalPrintPlugin.java $PKGDIR/
-          printf 'package net.lojitek.lotri;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity {\n  @Override public void onCreate(Bundle s) {\n    registerPlugin(ThermalPrintPlugin.class);\n    super.onCreate(s);\n  }\n}' > $PKGDIR/MainActivity.java
+          sed -i 's|package net.lojitek.lotri|package net.lojitek.app|g' $PKGDIR/ThermalPrintPlugin.java
+          printf 'package net.lojitek.app;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity {\n  @Override public void onCreate(Bundle s) {\n    registerPlugin(ThermalPrintPlugin.class);\n    super.onCreate(s);\n  }\n}' > $PKGDIR/MainActivity.java
 
       - name: Sync and Build APK
         run: |
@@ -65,6 +73,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lotri-APK
+          name: Lojitek-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
