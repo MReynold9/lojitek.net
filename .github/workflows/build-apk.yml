@@ -1,1 +1,81 @@
-name: test
+name: Build Lotri APK
+
+  on:
+    push:
+      branches: [android-apk]
+    workflow_dispatch:
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - uses: actions/setup-node@v4
+          with:
+            node-version: '20'
+
+        - name: Install Capacitor
+          run: npm install @capacitor/core @capacitor/cli @capacitor/android
+
+        - name: Setup Capacitor project
+          run: |
+            mkdir -p www
+            echo '<html><body>Lotri</body></html>' > www/index.html
+            cat > capacitor.config.json << 'CAPEOF'
+  {
+    "appId": "net.lojitek.lotri",
+    "appName": "Lotri",
+    "webDir": "www",
+    "server": {
+      "url": "https://lojitek.net",
+      "cleartext": true
+    },
+    "android": {
+      "allowMixedContent": true,
+      "backgroundColor": "#0f172a"
+    }
+  }
+  CAPEOF
+
+        - uses: actions/setup-java@v4
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+
+        - uses: android-actions/setup-android@v3
+
+        - name: Add Android platform
+          run: npx cap add android
+
+        - name: Register ThermalPrint plugin
+          run: |
+            PKGDIR=android/app/src/main/java/net/lojitek/lotri
+            mkdir -p $PKGDIR
+            cp ThermalPrintPlugin.java $PKGDIR/
+            cat > $PKGDIR/MainActivity.java << 'JAVAEOF'
+  package net.lojitek.lotri;
+  import android.os.Bundle;
+  import com.getcapacitor.BridgeActivity;
+  public class MainActivity extends BridgeActivity {
+    @Override public void onCreate(Bundle savedInstanceState) {
+      registerPlugin(ThermalPrintPlugin.class);
+      super.onCreate(savedInstanceState);
+    }
+  }
+  JAVAEOF
+
+        - name: Sync and Build APK
+          run: |
+            npx cap sync android
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon
+
+        - name: Upload APK
+          uses: actions/upload-artifact@v4
+          with:
+            name: Lotri-APK
+            path: android/app/build/outputs/apk/debug/app-debug.apk
+            retention-days: 30
+  
