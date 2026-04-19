@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p www
           echo '<html><body>Lotri</body></html>' > www/index.html
-          printf '{\n  "appId": "net.lojitek.lotri",\n  "appName": "Lotri",\n  "webDir": "www",\n  "server": {"url": "https://lojitek.net", "cleartext": true},\n  "android": {"allowMixedContent": true, "backgroundColor": "#0f172a"}\n}' > capacitor.config.json
+          printf '{\n  "appId": "net.lojitek.app",\n  "appName": "Lojitek",\n  "webDir": "www",\n  "server": {"url": "https://lojitek.net", "cleartext": true},\n  "android": {"allowMixedContent": true, "backgroundColor": "#0f172a"}\n}' > capacitor.config.json
 
       - uses: actions/setup-java@v4
         with:
