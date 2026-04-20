@@ -1,109 +1,126 @@
 name: Build Lojitek APK
 
-on:
-  push:
-    branches: [android-apk]
-  workflow_dispatch:
+  on:
+    push:
+      branches: [android-apk]
+    workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+        - uses: actions/setup-node@v4
+          with:
+            node-version: '20'
 
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+        - name: Install Capacitor
+          run: npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Setup project
-        run: |
-          mkdir -p www
-          echo '<html><body>Lojitek</body></html>' > www/index.html
-          printf '{\n  "appId": "net.lojitek.app",\n  "appName": "Lojitek",\n  "webDir": "www",\n  "server": {"url": "https://lojitek.net", "cleartext": true},\n  "android": {"allowMixedContent": true, "backgroundColor": "#ffffff"}\n}' > capacitor.config.json
+        - name: Setup project
+          run: |
+            mkdir -p www
+            echo '<html><body>Lojitek</body></html>' > www/index.html
+            printf '{\n  "appId": "net.lojitek.app",\n  "appName": "Lojitek",\n  "webDir": "www",\n  "server": {"url": "https://lojitek.net", "cleartext": true},\n  "android": {"allowMixedContent": true, "backgroundColor": "#ffffff"}\n}' > capacitor.config.json
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+        - uses: actions/setup-java@v4
+          with:
+            java-version: '21'
+            distribution: 'temurin'
 
-      - uses: android-actions/setup-android@v3
+        - uses: android-actions/setup-android@v3
 
-      - name: Add Android platform
-        run: npx cap add android
+        - name: Add Android platform
+          run: npx cap add android
 
-      - name: Set Lojitek logo as app icon
-        run: |
-          sudo apt-get install -y imagemagick
-          curl -sL https://lojitek.net/logo.png -o /tmp/logo.png
-          file /tmp/logo.png
-          for size in 48 72 96 144 192; do
-            case $size in
-              48)  folder=mipmap-mdpi ;;
-              72)  folder=mipmap-hdpi ;;
-              96)  folder=mipmap-xhdpi ;;
-              144) folder=mipmap-xxhdpi ;;
-              192) folder=mipmap-xxxhdpi ;;
-            esac
-            mkdir -p android/app/src/main/res/$folder
-            convert /tmp/logo.png -resize ${size}x${size} android/app/src/main/res/$folder/ic_launcher.png
-            convert /tmp/logo.png -resize ${size}x${size} android/app/src/main/res/$folder/ic_launcher_round.png
-          done
-          echo '✓ Icòn Lojitek aplike pou tout rezolisyon'
+        - name: Set Lojitek logo as app icon
+          run: |
+            pip install Pillow --quiet
+            curl -sL https://lojitek.replit.app/opengraph.jpg -o /tmp/source.jpg
+            python3 << 'PYEOF'
+            from PIL import Image
+            import os
 
-      - name: Force app name + fix network + fix blank screen
-        run: |
-          STRINGS=android/app/src/main/res/values/strings.xml
-          sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Lojitek</string>|g' $STRINGS
-          mkdir -p android/app/src/main/res/xml
-          cat > android/app/src/main/res/xml/network_security_config.xml << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <network-security-config>
-            <base-config cleartextTrafficPermitted="true">
-              <trust-anchors>
-                <certificates src="system"/>
-                <certificates src="user"/>
-              </trust-anchors>
-            </base-config>
-          </network-security-config>
-          EOF
-          MANIFEST=android/app/src/main/AndroidManifest.xml
-          sed -i 's|android:label="@string/app_name"|android:label="@string/app_name" android:usesCleartextTraffic="true" android:networkSecurityConfig="@xml/network_security_config"|g' $MANIFEST
+            img = Image.open("/tmp/source.jpg").convert("RGBA")
+            w, h = img.size
+            print(f"Source image: {w}x{h}")
 
-      - name: Fix Kotlin duplicate class conflict
-        run: |
-          cat >> android/build.gradle << 'EOF'
-          subprojects {
-            configurations.all {
-              resolutionStrategy {
-                force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-                force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+            # Crop to square (center)
+            side = min(w, h)
+            left = (w - side) // 2
+            top = (h - side) // 2
+            img = img.crop((left, top, left + side, top + side))
+
+            sizes = [
+              (48, "mipmap-mdpi"),
+              (72, "mipmap-hdpi"),
+              (96, "mipmap-xhdpi"),
+              (144, "mipmap-xxhdpi"),
+              (192, "mipmap-xxxhdpi"),
+            ]
+            for size, folder in sizes:
+              path = f"android/app/src/main/res/{folder}"
+              os.makedirs(path, exist_ok=True)
+              resized = img.resize((size, size), Image.LANCZOS)
+              resized.save(f"{path}/ic_launcher.png")
+              resized.save(f"{path}/ic_launcher_round.png")
+              print(f"  OK {folder}: {size}x{size}")
+            print("Done!")
+            PYEOF
+
+        - name: Force app name + fix network + fix blank screen
+          run: |
+            STRINGS=android/app/src/main/res/values/strings.xml
+            sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Lojitek</string>|g' $STRINGS
+            mkdir -p android/app/src/main/res/xml
+            cat > android/app/src/main/res/xml/network_security_config.xml << 'EOF'
+            <?xml version="1.0" encoding="utf-8"?>
+            <network-security-config>
+              <base-config cleartextTrafficPermitted="true">
+                <trust-anchors>
+                  <certificates src="system"/>
+                  <certificates src="user"/>
+                </trust-anchors>
+              </base-config>
+            </network-security-config>
+            EOF
+            MANIFEST=android/app/src/main/AndroidManifest.xml
+            sed -i 's|android:label="@string/app_name"|android:label="@string/app_name" android:usesCleartextTraffic="true" android:networkSecurityConfig="@xml/network_security_config"|g' $MANIFEST
+
+        - name: Fix Kotlin duplicate class conflict
+          run: |
+            cat >> android/build.gradle << 'EOF'
+            subprojects {
+              configurations.all {
+                resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+                }
               }
             }
-          }
-          EOF
+            EOF
 
-      - name: Register ThermalPrint plugin
-        run: |
-          PKGDIR=android/app/src/main/java/net/lojitek/app
-          mkdir -p $PKGDIR
-          cp ThermalPrintPlugin.java $PKGDIR/
-          sed -i 's|package net.lojitek.lotri|package net.lojitek.app|g' $PKGDIR/ThermalPrintPlugin.java
-          printf 'package net.lojitek.app;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity {\n  @Override public void onCreate(Bundle s) {\n    registerPlugin(ThermalPrintPlugin.class);\n    super.onCreate(s);\n  }\n}' > $PKGDIR/MainActivity.java
+        - name: Register ThermalPrint plugin
+          run: |
+            PKGDIR=android/app/src/main/java/net/lojitek/app
+            mkdir -p $PKGDIR
+            cp ThermalPrintPlugin.java $PKGDIR/
+            sed -i 's|package net.lojitek.lotri|package net.lojitek.app|g' $PKGDIR/ThermalPrintPlugin.java
+            printf 'package net.lojitek.app;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity {\n  @Override public void onCreate(Bundle s) {\n    registerPlugin(ThermalPrintPlugin.class);\n    super.onCreate(s);\n  }\n}' > $PKGDIR/MainActivity.java
 
-      - name: Sync and Build APK
-        run: |
-          npx cap sync android
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+        - name: Sync and Build APK
+          run: |
+            npx cap sync android
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Lojitek-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
+        - name: Upload APK
+          uses: actions/upload-artifact@v4
+          with:
+            name: Lojitek-APK
+            path: android/app/build/outputs/apk/debug/app-debug.apk
+            retention-days: 30
+  
