@@ -1,104 +1,118 @@
 #!/usr/bin/env python3
 """
-Generate Lojitek APK icon: square, full-frame, dark navy background,
-white circuit-board icon — no white circle border.
+Generate Lojitek APK icon matching the reference design:
+- Dark navy square background (fills full frame)
+- Chip: rounded-rect OUTLINE only (not filled)
+- Inner rect: OUTLINE only inside chip
+- Three RING nodes (hollow circles) connected by L-shaped traces
+- Rounded line caps everywhere
 """
 import os
-import sys
 from PIL import Image, ImageDraw
 
-SIZE   = 1024
-BG     = (0, 26, 62, 255)      # #001A3E
-WHITE  = (255, 255, 255, 255)
+SIZE  = 1024
+BG    = (13, 36, 66, 255)     # #0D2442  dark navy
+WHITE = (255, 255, 255, 255)
 
-def s(v):
-    """Scale a 0-100 value to pixels."""
-    return int(v / 100 * SIZE)
+def px(pct):
+    """Convert percentage to pixel value."""
+    return int(pct / 100.0 * SIZE)
 
-def draw_icon(draw):
-    LW = s(2.8)   # line / stroke width  ~29px
-    NR = s(5.0)   # node circle radius   ~51px
-    CR = s(5.2)   # chip corner radius   ~53px
 
-    # ── Chip outer rect ──────────────────────────────────────────────
-    # Occupies roughly the middle 58 % of the frame
-    cm = s(21)           # chip margin from edge
-    chip = [cm, cm, SIZE - cm, SIZE - cm]
-    draw.rounded_rectangle(chip, radius=CR, outline=WHITE, width=LW)
+def filled_rrect(draw, x1, y1, x2, y2, radius, color):
+    draw.rounded_rectangle([x1, y1, x2, y2], radius=radius, fill=color)
 
-    # ── Inner rect (CPU core) ─────────────────────────────────────────
-    im = s(35)
-    draw.rounded_rectangle([im, im, SIZE - im, SIZE - im],
-                           radius=s(2), fill=WHITE)
 
-    # ── Helper: draw an L-shaped trace + filled node ──────────────────
-    def trace(x1, y1, x2, y2, bend_x=None, bend_y=None):
-        """
-        Draw a right-angle trace from (x1,y1) to (x2,y2).
-        bend decides which axis goes first.
-        """
-        if bend_x is not None:
-            pts = [(x1, y1), (bend_x, y1), (bend_x, y2), (x2, y2)]
-        elif bend_y is not None:
-            pts = [(x1, y1), (x1, bend_y), (x2, bend_y), (x2, y2)]
-        else:
-            pts = [(x1, y1), (x2, y2)]
-        for i in range(len(pts) - 1):
-            draw.line([pts[i], pts[i + 1]], fill=WHITE, width=LW)
+def outline_rrect(draw, x1, y1, x2, y2, radius, stroke, fg, bg):
+    """Draw a rounded-rect that is outline-only (bg shows through)."""
+    filled_rrect(draw, x1, y1, x2, y2, radius, fg)
+    r2 = max(2, radius - stroke)
+    filled_rrect(draw, x1+stroke, y1+stroke, x2-stroke, y2-stroke, r2, bg)
 
-    def node(cx, cy):
-        draw.ellipse([cx - NR, cy - NR, cx + NR, cy + NR], fill=WHITE)
 
-    chip_l, chip_t, chip_r, chip_b = cm, cm, SIZE - cm, SIZE - cm
-    cx2, cy2 = SIZE // 2, SIZE // 2
+def ring(draw, cx, cy, outer_r, inner_r, fg, bg):
+    """Draw a hollow ring node."""
+    draw.ellipse([cx-outer_r, cy-outer_r, cx+outer_r, cy+outer_r], fill=fg)
+    draw.ellipse([cx-inner_r, cy-inner_r, cx+inner_r, cy+inner_r], fill=bg)
 
-    # Top-left node — comes from top-left corner of chip
-    nlx, nly = s(11), s(11)
-    trace(chip_l, chip_t, nlx, nly, bend_x=nlx)
-    node(nlx, nly)
 
-    # Top-right node — comes from top-right corner of chip
-    nrx, nry = s(87), s(14)
-    trace(chip_r, chip_t, nrx, nry, bend_x=nrx)
-    node(nrx, nry)
+def rline(draw, pts, width, color):
+    """
+    Draw polyline through pts with fully rounded caps/joins.
+    pts: list of (x, y) tuples
+    """
+    r = width // 2
+    for i in range(len(pts) - 1):
+        x1, y1 = pts[i]
+        x2, y2 = pts[i+1]
+        draw.line([(x1, y1), (x2, y2)], fill=color, width=width)
+    # rounded caps at every point
+    for (x, y) in pts:
+        draw.ellipse([x-r, y-r, x+r, y+r], fill=color)
 
-    # Right node — comes from mid-right of chip
-    rrx, rry = s(90), s(65)
-    trace(chip_r, cy2, rrx, rry, bend_y=rry)
-    node(rrx, rry)
 
-    # Bottom-center node — comes from bottom of chip
-    bcx, bcy = s(50), s(90)
-    trace(cx2, chip_b, bcx, bcy)
-    node(bcx, bcy)
+def draw_icon(img):
+    draw = ImageDraw.Draw(img)
+    bg = img.getpixel((0, 0))[:3] + (255,)   # background colour tuple
+
+    LW  = px(3.6)    # trace / stroke width  ~37px
+    NOR = px(7.2)    # node outer radius     ~74px
+    NIR = px(3.6)    # node inner radius     ~37px  (= LW/2 so ring wall = LW)
+    CR  = px(6.5)    # chip corner radius    ~67px
+
+    # ── Chip outer bounds ────────────────────────────────────────────────────
+    cx1, cy1 = px(26), px(23)
+    cx2, cy2 = px(65), px(70)
+    outline_rrect(draw, cx1, cy1, cx2, cy2, CR, LW, WHITE, bg)
+
+    # ── Inner rect (CPU die, outline only) ──────────────────────────────────
+    ix1, iy1 = px(35), px(37)
+    ix2, iy2 = px(57), px(57)
+    outline_rrect(draw, ix1, iy1, ix2, iy2, px(2), LW, WHITE, bg)
+
+    # ── Trace 1: top-left ring → left side of chip ──────────────────────────
+    # Node at (17%, 15%), exits bottom, goes down then right to chip left-centre
+    n1x, n1y = px(17), px(15)
+    mid_y1   = (cy1 + cy2) // 2          # vertical mid of chip
+    rline(draw, [(n1x, n1y + NOR), (n1x, mid_y1), (cx1, mid_y1)], LW, WHITE)
+    ring(draw, n1x, n1y, NOR, NIR, WHITE, bg)
+
+    # ── Trace 2: chip top-right corner → right → down → bottom-right ring ──
+    # Exits chip top-right, goes right, then down to node at (79%, 63%)
+    n2x, n2y = px(79), px(63)
+    rline(draw, [(cx2, cy1), (n2x, cy1), (n2x, n2y - NOR)], LW, WHITE)
+    ring(draw, n2x, n2y, NOR, NIR, WHITE, bg)
+
+    # ── Trace 3: chip bottom-centre → down → bottom-centre ring ─────────────
+    n3x = cx1 + (cx2 - cx1) * 45 // 100   # 45% across the chip width
+    n3y = px(83)
+    rline(draw, [(n3x, cy2), (n3x, n3y - NOR)], LW, WHITE)
+    ring(draw, n3x, n3y, NOR, NIR, WHITE, bg)
 
 
 def resize_and_save(img, path, size):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    resized = img.resize((size, size), Image.LANCZOS)
-    resized.convert("RGB").save(path, "PNG")
+    img.resize((size, size), Image.LANCZOS).convert("RGB").save(path, "PNG")
     print(f"  ✓ {path} ({size}×{size})")
 
 
 def main():
     img = Image.new("RGBA", (SIZE, SIZE), BG)
-    draw_icon(ImageDraw.Draw(img))
+    draw_icon(img)
 
-    # Save master icon
     img.convert("RGB").save("lojitek-icon.png", "PNG")
     print("Master icon saved: lojitek-icon.png")
 
-    # Android mipmap targets
     targets = {
-        "android/app/src/main/res/mipmap-mdpi/ic_launcher.png":       48,
-        "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png":  48,
-        "android/app/src/main/res/mipmap-hdpi/ic_launcher.png":       72,
-        "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png":  72,
-        "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png":      96,
-        "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png": 96,
-        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png":     144,
-        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png":144,
-        "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png":    192,
+        "android/app/src/main/res/mipmap-mdpi/ic_launcher.png":        48,
+        "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png":   48,
+        "android/app/src/main/res/mipmap-hdpi/ic_launcher.png":        72,
+        "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png":   72,
+        "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png":       96,
+        "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png":  96,
+        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png":      144,
+        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png": 144,
+        "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png":     192,
         "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png":192,
     }
 
@@ -106,7 +120,8 @@ def main():
     for path, size in targets.items():
         resize_and_save(img, path, size)
 
-    print("\nDone! Icon installed successfully.")
+    print("\nDone!")
+
 
 if __name__ == "__main__":
     main()
