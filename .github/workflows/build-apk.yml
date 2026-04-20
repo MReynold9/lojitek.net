@@ -34,9 +34,11 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Set app icon from lojitek.net/logo.png
+      - name: Set Lojitek logo as app icon
         run: |
+          sudo apt-get install -y imagemagick
           curl -sL https://lojitek.net/logo.png -o /tmp/logo.png
+          file /tmp/logo.png
           for size in 48 72 96 144 192; do
             case $size in
               48)  folder=mipmap-mdpi ;;
@@ -49,7 +51,7 @@ jobs:
             convert /tmp/logo.png -resize ${size}x${size} android/app/src/main/res/$folder/ic_launcher.png
             convert /tmp/logo.png -resize ${size}x${size} android/app/src/main/res/$folder/ic_launcher_round.png
           done
-          echo '✓ Icòn aplike pou tout rezolisyon'
+          echo '✓ Icòn Lojitek aplike pou tout rezolisyon'
 
       - name: Force app name + fix network + fix blank screen
         run: |
