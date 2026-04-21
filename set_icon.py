@@ -9,7 +9,7 @@ import os
 from PIL import Image
 
 SIZE      = 1024
-SCALE     = 1.45          # push the white ring outside the frame
+SCALE     = 1.0           # use image as-is (dark background already fills the frame)
 LOGO_FILE = "lojitek-icon-source.png"   # copied from attached_assets
 
 
