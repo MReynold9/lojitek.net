@@ -1,0 +1,14 @@
+{
+	"appId": "net.lojitek.lotri",
+	"appName": "Lotri",
+	"webDir": "dist/public",
+	"server": {
+		"url": "https://lojitek.net",
+		"cleartext": true
+	},
+	"android": {
+		"allowMixedContent": true,
+		"backgroundColor": "#0f172a",
+		"minWebViewVersion": 60
+	}
+}
