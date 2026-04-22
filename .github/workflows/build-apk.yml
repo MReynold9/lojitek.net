@@ -9,27 +9,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Build web app
         run: npx vite build --outDir dist/public
         env:
           NODE_ENV: production
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - uses: android-actions/setup-android@v3
-
-      - run: npx cap add android
+      - name: Regenerate Android project
+        run: rm -rf android && npx cap add android
 
       - name: Install Pillow
         run: pip3 install Pillow
@@ -37,20 +40,26 @@ jobs:
       - name: Set app icon
         run: python3 set_icon.py
 
-      - name: Copy print plugin
+      - name: Copy thermal print plugin
         run: |
           cp android-plugin/ThermalPrintPlugin.java \
             android/app/src/main/java/net/lojitek/lotri/ThermalPrintPlugin.java
 
-      - run: npx cap sync android
+      - name: Add Bluetooth permissions
+        run: |
+          sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.BLUETOOTH" />\n    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />\n    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />\n    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />|' android/app/src/main/AndroidManifest.xml
+
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: Lotri-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
