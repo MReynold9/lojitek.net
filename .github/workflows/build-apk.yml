@@ -17,22 +17,39 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build web app
-        run: npx vite build --outDir dist/public
-        env:
-          NODE_ENV: production
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Regenerate Android project
-        run: rm -rf android && npx cap add android
+      - name: Install Capacitor
+        run: |
+          npm init -y
+          npm install @capacitor/cli @capacitor/core @capacitor/android
+
+      - name: Create Capacitor config
+        run: |
+          cat > capacitor.config.json << 'EOF'
+          {
+            "appId": "net.lojitek.lotri",
+            "appName": "Lotri",
+            "webDir": "www",
+            "server": {
+              "url": "https://lojitek.net",
+              "cleartext": true
+            },
+            "android": {
+              "allowMixedContent": true,
+              "backgroundColor": "#0f172a"
+            }
+          }
+          EOF
+          mkdir -p www
+          echo "<html><body></body></html>" > www/index.html
+
+      - name: Add Android platform
+        run: npx cap add android
 
       - name: Install Pillow
         run: pip3 install Pillow
