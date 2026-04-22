@@ -35,7 +35,7 @@ jobs:
           cat > capacitor.config.json << 'EOF'
           {
             "appId": "net.lojitek.lotri",
-            "appName": "Lotri",
+            "appName": "Lojitek",
             "webDir": "www",
             "server": {
               "url": "https://lojitek.net",
@@ -78,7 +78,43 @@ jobs:
         run: pip3 install Pillow
 
       - name: Set app icon
-        run: python3 set_icon.py
+        run: |
+          python3 set_icon.py
+          python3 << 'PYEOF'
+          from PIL import Image
+          import os
+
+          src = Image.open("lojitek-icon-source.png").convert("RGBA")
+
+          adaptive_targets = {
+              "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
+              "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": 162,
+              "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": 216,
+              "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": 324,
+              "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": 432,
+          }
+
+          for path, size in adaptive_targets.items():
+              os.makedirs(os.path.dirname(path), exist_ok=True)
+              img = src.resize((size, size), Image.LANCZOS)
+              img.save(path, "PNG")
+              print(f"  OK {path} ({size}x{size})")
+
+          for xml_path in [
+              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+          ]:
+              if os.path.exists(xml_path):
+                  os.remove(xml_path)
+                  print(f"  Removed {xml_path}")
+
+          print("Adaptive icon done!")
+          PYEOF
+
+      - name: Fix app label in AndroidManifest
+        run: |
+          sed -i 's/android:label="[^"]*"/android:label="Lojitek"/g' \
+            android/app/src/main/AndroidManifest.xml
 
       - name: Copy thermal print plugin
         run: |
@@ -96,11 +132,11 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --info 2>&1 | tail -150
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lotri-APK
+          name: Lojitek-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
