@@ -77,6 +77,28 @@ jobs:
       - name: Install Pillow
         run: pip3 install Pillow
 
+      - name: Transform icon to white background
+        run: |
+          python3 << 'PYEOF'
+          from PIL import Image
+
+          img = Image.open("lojitek-icon-source.png").convert("RGB")
+          pixels = img.load()
+          w, h = img.size
+
+          for y in range(h):
+              for x in range(w):
+                  r, g, b = pixels[x, y]
+                  brightness = r + g + b
+                  if brightness > 500:
+                      pixels[x, y] = (26, 58, 138)
+                  else:
+                      pixels[x, y] = (255, 255, 255)
+
+          img.save("lojitek-icon-source.png")
+          print("Icon transformed: white background + navy circuit")
+          PYEOF
+
       - name: Set app icon
         run: |
           python3 set_icon.py
@@ -98,7 +120,7 @@ jobs:
               os.makedirs(os.path.dirname(path), exist_ok=True)
               img = src.resize((size, size), Image.LANCZOS)
               img.save(path, "PNG")
-              print(f"  OK {path} ({size}x{size})")
+              print(f"  OK {path}")
 
           for xml_path in [
               "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
@@ -107,8 +129,6 @@ jobs:
               if os.path.exists(xml_path):
                   os.remove(xml_path)
                   print(f"  Removed {xml_path}")
-
-          print("Adaptive icon done!")
           PYEOF
 
       - name: Fix app label in AndroidManifest
