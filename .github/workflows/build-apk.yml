@@ -49,7 +49,7 @@ jobs:
           echo "<html><body></body></html>" > www/index.html
 
       - name: Add Android platform
-        run: npx cap add android
+        run: rm -rf android && npx cap add android
 
       - name: Install Pillow
         run: pip3 install Pillow
