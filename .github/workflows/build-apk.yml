@@ -77,26 +77,21 @@ jobs:
       - name: Install Pillow
         run: pip3 install Pillow
 
-      - name: Transform icon to white background
+      - name: Scale up icon to fill space
         run: |
           python3 << 'PYEOF'
           from PIL import Image
 
-          img = Image.open("lojitek-icon-source.png").convert("RGB")
-          pixels = img.load()
+          img = Image.open("lojitek-icon-source.png").convert("RGBA")
           w, h = img.size
 
-          for y in range(h):
-              for x in range(w):
-                  r, g, b = pixels[x, y]
-                  brightness = r + g + b
-                  if brightness > 500:
-                      pixels[x, y] = (26, 58, 138)
-                  else:
-                      pixels[x, y] = (255, 255, 255)
-
+          # Crop 8% margin each side to zoom in - same colors, just bigger
+          margin_x = int(w * 0.08)
+          margin_y = int(h * 0.08)
+          img = img.crop((margin_x, margin_y, w - margin_x, h - margin_y))
+          img = img.resize((1024, 1024), Image.LANCZOS)
           img.save("lojitek-icon-source.png")
-          print("Icon transformed: white background + navy circuit")
+          print("Icon scaled up - same colors, just bigger")
           PYEOF
 
       - name: Set app icon
