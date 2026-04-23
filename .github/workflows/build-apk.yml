@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,6 +33,7 @@ jobs:
         run: |
           mkdir -p www
           echo "<html><body></body></html>" > www/index.html
+
           cat > capacitor.config.json << 'EOF'
           {
             "appId": "net.lojitek.lotri",
@@ -54,16 +56,14 @@ jobs:
       - name: Fix Kotlin stdlib conflict
         run: |
           echo "kotlin.stdlib.default.dependency=false" >> android/gradle.properties
+
           python3 << 'PYEOF'
-          with open('android/build.gradle', 'r') as f:
-              content = f.read()
           patch = """
           subprojects {
               configurations.all {
                   resolutionStrategy.eachDependency { details ->
                       if (details.requested.group == 'org.jetbrains.kotlin') {
                           details.useVersion '1.9.0'
-                          details.because 'Align all Kotlin stdlib versions'
                       }
                   }
               }
@@ -71,70 +71,62 @@ jobs:
           """
           with open('android/build.gradle', 'a') as f:
               f.write(patch)
-          print("Patched build.gradle OK")
+          print("Kotlin fix applied")
           PYEOF
 
       - name: Install Pillow
         run: pip3 install Pillow
 
-      - name: Scale up icon to fill space
+      # 🔥 NOUVO STEP: Netwaye + santre logo
+      - name: Prepare icon (clean + center)
         run: |
           python3 << 'PYEOF'
           from PIL import Image
 
           img = Image.open("lojitek-icon-source.png").convert("RGBA")
-          w, h = img.size
 
-          # Crop 8% margin each side to zoom in - same colors, just bigger
-          margin_x = int(w * 0.08)
-          margin_y = int(h * 0.08)
-          img = img.crop((margin_x, margin_y, w - margin_x, h - margin_y))
+          # retire espas vid
+          img = img.crop(img.getbbox())
+
+          # resize propre
           img = img.resize((1024, 1024), Image.LANCZOS)
+
           img.save("lojitek-icon-source.png")
-          print("Icon scaled up - same colors, just bigger")
+          print("Icon cleaned & centered")
           PYEOF
 
       - name: Set app icon
         run: |
-          python3 set_icon.py
           python3 << 'PYEOF'
           from PIL import Image
           import os
 
           src = Image.open("lojitek-icon-source.png").convert("RGBA")
 
-          adaptive_targets = {
-              "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
-              "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": 162,
-              "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": 216,
-              "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": 324,
-              "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": 432,
+          targets = {
+              "android/app/src/main/res/mipmap-mdpi/ic_launcher.png": 48,
+              "android/app/src/main/res/mipmap-hdpi/ic_launcher.png": 72,
+              "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": 96,
+              "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": 144,
+              "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": 192,
           }
 
-          for path, size in adaptive_targets.items():
+          for path, size in targets.items():
               os.makedirs(os.path.dirname(path), exist_ok=True)
               img = src.resize((size, size), Image.LANCZOS)
               img.save(path, "PNG")
-              print(f"  OK {path}")
-
-          for xml_path in [
-              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
-              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
-          ]:
-              if os.path.exists(xml_path):
-                  os.remove(xml_path)
-                  print(f"  Removed {xml_path}")
+              print(f"OK {path}")
           PYEOF
 
-      - name: Fix app label in AndroidManifest
+      - name: Fix app label
         run: |
           sed -i 's/android:label="[^"]*"/android:label="Lojitek"/g' \
-            android/app/src/main/AndroidManifest.xml
+          android/app/src/main/AndroidManifest.xml
 
       - name: Copy thermal print plugin
         run: |
           cp android-plugin/ThermalPrintPlugin.java \
-            android/app/src/main/java/net/lojitek/lotri/ThermalPrintPlugin.java || true
+          android/app/src/main/java/net/lojitek/lotri/ThermalPrintPlugin.java || true
 
       - name: Add Bluetooth permissions
         run: |
