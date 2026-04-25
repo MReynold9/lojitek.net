@@ -8,80 +8,69 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Node.js
+
+      # Node + Java
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: 17
+          distribution: temurin
+
+      # Install Capacitor
       - name: Install Capacitor
         run: |
           npm init -y
           npm install @capacitor/cli @capacitor/core @capacitor/android
-      - name: Create Capacitor config
+
+      # Prepare web app (PA METE BLANK PAGE ANKO!)
+      - name: Prepare web files
         run: |
           mkdir -p www
-          echo "<html><body></body></html>" > www/index.html
+          cp -r ./* www/ || true
+
+      # Capacitor config (SAN URL EXTÈN)
+      - name: Create config
+        run: |
           cat > capacitor.config.json << 'EOF'
-          {"appId":"net.lojitek.lotri","appName":"Lojitek","webDir":"www","server":{"url":"https://lojitek.net","cleartext":true},"android":{"allowMixedContent":true,"backgroundColor":"#0f172a"}}
+          {
+            "appId": "net.lojitek.lotri",
+            "appName": "Lojitek",
+            "webDir": "www",
+            "android": {
+              "backgroundColor": "#0f172a"
+            }
+          }
           EOF
-      - name: Add Android platform
-        run: rm -rf android && npx cap add android
-      - name: Fix Kotlin conflict
+
+      # Add Android
+      - name: Add Android
         run: |
-          echo "kotlin.stdlib.default.dependency=false" >> android/gradle.properties
-          python3 << 'PYEOF'
-          with open('android/build.gradle','r') as f: c=f.read()
-          with open('android/build.gradle','a') as f:
-            f.write('\nsubprojects{configurations.all{resolutionStrategy.eachDependency{details->if(details.requested.group=="org.jetbrains.kotlin"){details.useVersion "1.9.0"}}}}')
-          PYEOF
-      - name: Install Pillow
-        run: pip3 install Pillow
-      - name: Prepare icon
-        run: |
-          python3 << 'PYEOF'
-          from PIL import Image
-          import os
-          img = Image.open("lojitek-icon-source.png").convert("RGB")
-          w,h = img.size
-          mx,my = int(w*0.05),int(h*0.05)
-          img = img.crop((mx,my,w-mx,h-my)).resize((1024,1024),Image.LANCZOS)
-          img.save("lojitek-icon-source.png")
-          PYEOF
-      - name: Set icon
-        run: |
-          python3 set_icon.py
-          python3 << 'PYEOF'
-          from PIL import Image
-          import os
-          src=Image.open("lojitek-icon-source.png").convert("RGBA")
-          for p,s in {"android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png":108,"android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png":162,"android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png":216,"android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png":324,"android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png":432}.items():
-            os.makedirs(os.path.dirname(p),exist_ok=True)
-            src.resize((s,s),Image.LANCZOS).save(p,"PNG")
-          for x in ["android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml","android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"]:
-            os.path.exists(x) and os.remove(x)
-          PYEOF
-      - name: Fix label
-        run: sed -i 's/android:label="[^"]*"/android:label="Lojitek"/g' android/app/src/main/AndroidManifest.xml
-      - name: Copy plugin
-        run: cp android-plugin/ThermalPrintPlugin.java android/app/src/main/java/net/lojitek/lotri/ThermalPrintPlugin.java || true
-      - name: Add Bluetooth
-        run: |
-          sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.BLUETOOTH" />\n    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />\n    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />|' android/app/src/main/AndroidManifest.xml
+          rm -rf android
+          npx cap add android
+
+      # Sync
       - name: Sync
         run: npx cap sync android
+
+      # Build APK
       - name: Build APK
         run: |
-          cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Lojitek-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
