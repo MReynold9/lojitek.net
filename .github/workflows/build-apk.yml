@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,110 +23,122 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Install dependencies
+      - name: Install Capacitor
         run: |
           npm init -y
-          npm install @capacitor/cli@6 @capacitor/core@6 @capacitor/android@6
+          npm install @capacitor/cli @capacitor/core @capacitor/android
 
-      - name: Create project files
+      - name: Create Capacitor config
         run: |
           mkdir -p www
           echo "<html><body></body></html>" > www/index.html
-
           cat > capacitor.config.json << 'EOF'
-{
-  "appId": "net.lojitek.lotri",
-  "appName": "Lojitek",
-  "webDir": "www",
-  "server": {
-    "url": "https://lojitek.net",
-    "cleartext": true
-  },
-  "android": {
-    "allowMixedContent": true,
-    "backgroundColor": "#0f172a"
-  }
-}
-EOF
+          {
+            "appId": "net.lojitek.lotri",
+            "appName": "Lojitek",
+            "webDir": "www",
+            "server": {
+              "url": "https://lojitek.net",
+              "cleartext": true
+            },
+            "android": {
+              "allowMixedContent": true,
+              "backgroundColor": "#0f172a"
+            }
+          }
+          EOF
 
       - name: Add Android platform
-        run: |
-          npx cap add android
+        run: rm -rf android && npx cap add android
 
-      - name: Fix Kotlin version
+      - name: Fix Kotlin stdlib conflict
         run: |
           echo "kotlin.stdlib.default.dependency=false" >> android/gradle.properties
+          python3 << 'PYEOF'
+          with open('android/build.gradle', 'r') as f:
+              content = f.read()
+          patch = """
+          subprojects {
+              configurations.all {
+                  resolutionStrategy.eachDependency { details ->
+                      if (details.requested.group == 'org.jetbrains.kotlin') {
+                          details.useVersion '1.9.0'
+                          details.because 'Align all Kotlin stdlib versions'
+                      }
+                  }
+              }
+          }
+          """
+          with open('android/build.gradle', 'a') as f:
+              f.write(patch)
+          print("Patched build.gradle OK")
+          PYEOF
 
-          cat >> android/build.gradle << 'EOF'
-
-subprojects {
-    configurations.all {
-        resolutionStrategy.eachDependency { details ->
-            if (details.requested.group == 'org.jetbrains.kotlin') {
-                details.useVersion '1.9.0'
-            }
-        }
-    }
-}
-EOF
-
-      - name: Install Python deps
+      - name: Install Pillow
         run: pip3 install Pillow
 
-      - name: Prepare icon (safe)
+      - name: Scale up icon to fill space
         run: |
-          if [ -f "lojitek-icon-source.png" ]; then
-            python3 << 'EOF'
-from PIL import Image
-img = Image.open("lojitek-icon-source.png").convert("RGB")
-w, h = img.size
-mx, my = int(w*0.05), int(h*0.05)
-img = img.crop((mx, my, w-mx, h-my)).resize((1024, 1024))
-img.save("lojitek-icon-source.png")
-EOF
-          fi
+          python3 << 'PYEOF'
+          from PIL import Image
 
-      - name: Set foreground icons
+          img = Image.open("lojitek-icon-source.png").convert("RGBA")
+          w, h = img.size
+
+          # Crop 8% margin each side to zoom in - same colors, just bigger
+          margin_x = int(w * 0.08)
+          margin_y = int(h * 0.08)
+          img = img.crop((margin_x, margin_y, w - margin_x, h - margin_y))
+          img = img.resize((1024, 1024), Image.LANCZOS)
+          img.save("lojitek-icon-source.png")
+          print("Icon scaled up - same colors, just bigger")
+          PYEOF
+
+      - name: Set app icon
         run: |
-          if [ -f "lojitek-icon-source.png" ]; then
-            python3 << 'EOF'
-from PIL import Image
-import os
+          python3 set_icon.py
+          python3 << 'PYEOF'
+          from PIL import Image
+          import os
 
-src = Image.open("lojitek-icon-source.png").convert("RGBA")
+          src = Image.open("lojitek-icon-source.png").convert("RGBA")
 
-sizes = {
-  "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
-  "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": 162,
-  "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": 216,
-  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": 324,
-  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": 432,
-}
+          adaptive_targets = {
+              "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
+              "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": 162,
+              "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": 216,
+              "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": 324,
+              "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": 432,
+          }
 
-for path, size in sizes.items():
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    src.resize((size, size)).save(path, "PNG")
-EOF
-          fi
+          for path, size in adaptive_targets.items():
+              os.makedirs(os.path.dirname(path), exist_ok=True)
+              img = src.resize((size, size), Image.LANCZOS)
+              img.save(path, "PNG")
+              print(f"  OK {path}")
 
-      - name: Fix app label
+          for xml_path in [
+              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+              "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+          ]:
+              if os.path.exists(xml_path):
+                  os.remove(xml_path)
+                  print(f"  Removed {xml_path}")
+          PYEOF
+
+      - name: Fix app label in AndroidManifest
         run: |
-          if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
-            sed -i 's/android:label="[^"]*"/android:label="Lojitek"/g' android/app/src/main/AndroidManifest.xml
-          fi
+          sed -i 's/android:label="[^"]*"/android:label="Lojitek"/g' \
+            android/app/src/main/AndroidManifest.xml
+
+      - name: Copy thermal print plugin
+        run: |
+          cp android-plugin/ThermalPrintPlugin.java \
+            android/app/src/main/java/net/lojitek/lotri/ThermalPrintPlugin.java || true
 
       - name: Add Bluetooth permissions
         run: |
-          if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
-            sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\
-    <uses-permission android:name="android.permission.BLUETOOTH" />\
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />\
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />|' android/app/src/main/AndroidManifest.xml
-          fi
-
-      - name: Copy thermal plugin (optional)
-        run: |
-          cp android-plugin/ThermalPrintPlugin.java android/app/src/main/java/net/lojitek/lotri/ 2>/dev/null || true
+          sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.BLUETOOTH" />\n    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />\n    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />\n    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />|' android/app/src/main/AndroidManifest.xml
 
       - name: Sync Capacitor
         run: npx cap sync android
@@ -143,4 +154,4 @@ EOF
         with:
           name: Lojitek-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30u
+          retention-days: 30
