@@ -100,8 +100,14 @@ jobs:
           python3 << 'PYEOF'
           from PIL import Image
           import os
-
-          src = Image.open("lojitek-icon-source.png").convert("RGBA")
+      - name: Add Lojitek logo
+        run: |
+          if [ -f assets/logo.png ]; then
+            cp assets/logo.png lojitek-icon-source.png
+          else
+            echo "Logo pa jwenn!"
+            exit 1
+          fi
 
           adaptive_targets = {
               "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
