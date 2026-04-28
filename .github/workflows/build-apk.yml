@@ -77,10 +77,6 @@ jobs:
       - name: Install Pillow
         run: pip3 install Pillow
 
-      # ✅ SA A SE POU METE LOGO OU
-      - name: Add Lojitek logo
-        run: cp assets/logo.png lojitek-icon-source.png
-
       - name: Scale up icon to fill space
         run: |
           python3 << 'PYEOF'
@@ -89,6 +85,7 @@ jobs:
           img = Image.open("lojitek-icon-source.png").convert("RGBA")
           w, h = img.size
 
+          # Crop 8% margin each side to zoom in - same colors, just bigger
           margin_x = int(w * 0.08)
           margin_y = int(h * 0.08)
           img = img.crop((margin_x, margin_y, w - margin_x, h - margin_y))
