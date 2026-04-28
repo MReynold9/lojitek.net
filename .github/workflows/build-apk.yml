@@ -1,4 +1,4 @@
-name: Build Lojitek APK
+menm kod sa  seulman logo an pou mete ladann     name: Build Lojitek APK
 
 on:
   push:
@@ -100,14 +100,8 @@ jobs:
           python3 << 'PYEOF'
           from PIL import Image
           import os
-      - name: Add Lojitek logo
-        run: |
-          if [ -f assets/logo.png ]; then
-            cp assets/logo.png lojitek-icon-source.png
-          else
-            echo "Logo pa jwenn!"
-            exit 1
-          fi
+
+          src = Image.open("lojitek-icon-source.png").convert("RGBA")
 
           adaptive_targets = {
               "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": 108,
