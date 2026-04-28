@@ -1,4 +1,4 @@
-menm kod sa  seulman logo an pou mete ladann     name: Build Lojitek APK
+name: Build Lojitek APK
 
 on:
   push:
